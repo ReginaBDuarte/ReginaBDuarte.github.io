@@ -4,9 +4,15 @@ import FrameworkCard from '../../components/FrameworkCard.astro';
 import Placeholder from '../../components/Placeholder.astro';
 import { getCollection, type CollectionEntry } from 'astro:content';
 import { useTranslations, defaultLang, type Lang } from '../../i18n/ui';
+import { isPlaceholder } from '../../lib/placeholder';
 
 const lang = (Astro.currentLocale ?? defaultLang) as Lang;
 const t = useTranslations(lang);
+
+// Authors strings are "A, B, C" — split on the separator so Regina's own
+// name can be bolded wherever it falls in the author order, rather than
+// hardcoding "first author" (she isn't always first).
+const OWN_AUTHOR = 'R. de Brito Duarte';
 
 const allResearch = await getCollection('research');
 
@@ -70,7 +76,16 @@ blocks.sort((a, b) => b.repYear - a.repYear);
             {block.entries.map((entry) => (
               <li>
                 <span class="authors">
-                  <Placeholder value={entry.data.authors} />
+                  {isPlaceholder(entry.data.authors) ? (
+                    <Placeholder value={entry.data.authors} />
+                  ) : (
+                    entry.data.authors.split(', ').map((author, i, arr) => (
+                      <>
+                        {author === OWN_AUTHOR ? <strong class="own-author">{author}</strong> : author}
+                        {i < arr.length - 1 ? ', ' : ''}
+                      </>
+                    ))
+                  )}
                   {block.isSeries && <span class="inline-year"> · {entry.data.year}</span>}
                 </span>
                 <span class="title">{entry.data.title}</span>
@@ -143,6 +158,10 @@ blocks.sort((a, b) => b.repYear - a.repYear);
     grid-column: 1 / -1;
     font-size: var(--text-caption);
     color: var(--text-faint);
+  }
+  .year-group .authors .own-author {
+    color: var(--ink-800);
+    font-weight: 700;
   }
   .year-group .inline-year {
     color: var(--coral-700);

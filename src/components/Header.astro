@@ -55,7 +55,10 @@ const localeLinks = (Object.keys(languages) as Lang[]).map((code) => ({
     display: flex;
     align-items: center;
     justify-content: space-between;
-    height: 72px;
+    flex-wrap: wrap;
+    row-gap: 8px;
+    min-height: 72px;
+    padding: 12px 0;
   }
   .brand {
     display: flex;

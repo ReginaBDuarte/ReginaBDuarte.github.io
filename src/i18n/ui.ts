@@ -128,7 +128,7 @@ const en = {
   location: 'Lisbon, Portugal',
   },
   meta: {
-    homeTitle: 'Regina de Brito Duarte · AI, HCI, evidence-based policy',
+    homeTitle: 'Regina de Brito Duarte · Human-AI Interaction Research and Policy',
     homeDescription:
       "I study how people and AI make decisions together, and I'm moving that work toward health systems and public policy.",
     researchTitle: 'Research · Regina de Brito Duarte',
