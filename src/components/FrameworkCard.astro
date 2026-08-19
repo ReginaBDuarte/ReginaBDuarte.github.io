@@ -1,0 +1,68 @@
+---
+import { getEntry } from 'astro:content';
+import Placeholder from './Placeholder.astro';
+import { useTranslations, localizePath, defaultLang, type Lang } from '../i18n/ui';
+
+const lang = (Astro.currentLocale ?? defaultLang) as Lang;
+const t = useTranslations(lang);
+const entry = await getEntry('framework', lang);
+const { name, version, updated, whatItIs } = entry!.data;
+---
+<div class="framework-card fade-up">
+  <h2><Placeholder value={name} /></h2>
+  <p>{whatItIs}</p>
+  <div class="meta">
+    <span>{t.frameworkCard.version} <Placeholder value={version} /></span>
+    <span class="dot">·</span>
+    <span>{t.frameworkCard.updated} <Placeholder value={updated} /></span>
+    <span class="dot">·</span>
+    <a class="cta" href={localizePath('/framework/', lang)}>{t.frameworkCard.cta}</a>
+  </div>
+</div>
+
+<style>
+  .framework-card {
+    background: var(--iris-500);
+    color: var(--ivory);
+    border-radius: var(--radius-lg);
+    padding: 56px;
+    box-shadow: var(--shadow-iris);
+  }
+  .framework-card h2 {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: var(--text-display-m);
+    letter-spacing: var(--tracking-tight);
+    color: var(--ivory);
+    margin: 0;
+    max-width: 720px;
+  }
+  .framework-card p {
+    font-size: var(--text-body-l);
+    line-height: var(--leading-relaxed);
+    color: var(--iris-100);
+    max-width: var(--maxw-prose);
+    margin: 20px 0 0;
+  }
+  .framework-card .meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 32px;
+    font-family: var(--font-mono);
+    font-size: var(--text-caption);
+    color: var(--iris-100);
+  }
+  .framework-card .dot { color: var(--iris-500); }
+  .framework-card .cta {
+    color: var(--coral-300);
+    text-decoration: none;
+    font-weight: 600;
+  }
+  .framework-card .cta:hover { color: var(--coral-200); }
+
+  @media (max-width: 720px) {
+    .framework-card { padding: 32px; }
+  }
+</style>

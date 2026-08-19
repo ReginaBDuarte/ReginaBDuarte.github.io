@@ -1,0 +1,231 @@
+<!-- @dsCard group="Personal Website" viewport="1280x860" name="Home" subtitle="Academic / personal site — hero, selected research, writing, about" -->
+<!-- @startingPoint section="Personal Website" subtitle="Researcher personal-site home page" viewport="1280x860" -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Regina de Brito Duarte — AI · HCI · Policy</title>
+<link rel="stylesheet" href="../../styles.css" />
+<style>
+  body { margin: 0; background: var(--bg-canvas); color: var(--text-body); }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 0 40px; }
+  a { color: inherit; }
+
+  /* Header */
+  header { position: sticky; top: 0; z-index: 20; background: color-mix(in srgb, var(--ivory) 88%, transparent); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border-soft); }
+  .nav { display: flex; align-items: center; justify-content: space-between; height: 72px; }
+  .brand { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+  .mono-mark { width: 40px; height: 40px; border-radius: 11px; background: var(--coral-300); color: var(--ink-900); display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-weight: 800; font-size: 15px; letter-spacing: -0.05em; }
+  .brand b { font-family: var(--font-display); font-weight: 700; font-size: 17px; color: var(--ink-900); letter-spacing: -0.01em; }
+  .links { display: flex; align-items: center; gap: 28px; }
+  .links a { font-size: 15px; font-weight: 500; text-decoration: none; color: var(--ink-700); transition: color var(--dur) var(--ease-out); }
+  .links a:hover { color: var(--coral-600); }
+  .btn { font-family: var(--font-text); font-weight: 600; font-size: 15px; border: none; border-radius: 999px; padding: 10px 20px; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; transition: transform var(--dur-fast) var(--ease-out), background var(--dur) var(--ease-out); }
+  .btn:active { transform: translateY(1px); }
+  .btn--coral { background: var(--coral-500); color: #fff; box-shadow: var(--shadow-accent); }
+  .btn--coral:hover { background: var(--coral-600); }
+  .btn--outline { background: transparent; color: var(--ink-900); box-shadow: inset 0 0 0 2px var(--ink-300); }
+  .btn--outline:hover { box-shadow: inset 0 0 0 2px var(--ink-900); }
+
+  .eyebrow { font-family: var(--font-mono); font-size: 13px; font-weight: 500; letter-spacing: 0.16em; text-transform: uppercase; color: var(--coral-700); display: inline-flex; align-items: center; gap: 12px; }
+  .eyebrow::before { content: ""; width: 28px; height: 2px; background: var(--coral-400); border-radius: 2px; }
+
+  /* Hero */
+  .hero { position: relative; padding: 96px 0 80px; overflow: hidden; }
+  .hero h1 { font-family: var(--font-display); font-weight: 800; font-size: 76px; line-height: 1.02; letter-spacing: -0.025em; color: var(--ink-900); margin: 24px 0 0; max-width: 880px; }
+  .hero .lead { font-size: 21px; line-height: 1.55; color: var(--ink-600); max-width: 620px; margin: 28px 0 0; }
+  .hero .cta { display: flex; gap: 14px; margin-top: 36px; }
+  .bloom { position: absolute; top: 90px; right: 12px; width: 150px; opacity: 0.95; }
+  .affil { display: flex; align-items: center; gap: 18px; margin-top: 56px; padding-top: 28px; border-top: 1px solid var(--border-soft); }
+  .affil span { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.08em; color: var(--text-faint); text-transform: uppercase; }
+  .affil img { height: 26px; width: auto; opacity: 0.85; }
+
+  /* Section */
+  section { padding: 72px 0; }
+  .sec-head { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 36px; }
+  .sec-head h2 { font-family: var(--font-display); font-weight: 800; font-size: 38px; letter-spacing: -0.02em; color: var(--ink-900); margin: 10px 0 0; }
+
+  /* Research cards */
+  .research { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .paper { background: var(--paper); border: 1px solid var(--border-soft); border-radius: 16px; padding: 28px; box-shadow: var(--shadow-sm); transition: transform var(--dur) var(--ease-out), box-shadow var(--dur) var(--ease-out); cursor: pointer; }
+  .paper:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); }
+  .paper .meta { display: flex; align-items: center; gap: 10px; }
+  .badge { font-family: var(--font-mono); font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; padding: 4px 9px; border-radius: 6px; background: var(--ink-900); color: var(--ivory); }
+  .badge--iris { background: var(--iris-500); }
+  .year { font-family: var(--font-mono); font-size: 13px; color: var(--text-faint); }
+  .paper h3 { font-family: var(--font-display); font-weight: 700; font-size: 23px; line-height: 1.2; color: var(--ink-900); margin: 16px 0 0; letter-spacing: -0.01em; }
+  .paper p { font-size: 15px; line-height: 1.55; color: var(--text-muted); margin: 12px 0 0; }
+  .tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+  .tag { font-size: 12.5px; font-weight: 600; padding: 5px 11px; border-radius: 999px; background: var(--iris-100); color: var(--iris-700); }
+  .tag--coral { background: var(--coral-100); color: var(--coral-700); }
+
+  /* Writing strip */
+  .writing { background: var(--cream); border-radius: 24px; padding: 48px; }
+  .posts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  .post { background: var(--paper); border-radius: 14px; padding: 22px; text-decoration: none; display: block; transition: transform var(--dur) var(--ease-out); }
+  .post:hover { transform: translateY(-3px); }
+  .post .k { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--coral-700); }
+  .post h4 { font-family: var(--font-display); font-weight: 700; font-size: 18px; line-height: 1.25; color: var(--ink-900); margin: 10px 0 0; }
+  .post .read { font-size: 13px; color: var(--text-faint); margin-top: 14px; font-family: var(--font-mono); }
+
+  /* About */
+  .about { display: grid; grid-template-columns: 280px 1fr; gap: 48px; align-items: center; }
+  .portrait { aspect-ratio: 1; border-radius: 20px; background: linear-gradient(150deg, var(--iris-200), var(--coral-200)); display: flex; align-items: flex-end; justify-content: center; overflow: hidden; }
+  .about-body h2 { font-family: var(--font-display); font-weight: 800; font-size: 34px; letter-spacing: -0.02em; color: var(--ink-900); margin: 14px 0 0; }
+  .about-body p { font-size: 17px; line-height: 1.6; color: var(--ink-700); margin: 18px 0 0; max-width: 620px; }
+
+  /* Footer */
+  footer { background: var(--ink-900); color: var(--ivory); padding: 64px 0 40px; margin-top: 40px; }
+  .foot { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 32px; }
+  .foot h3 { font-family: var(--font-display); font-weight: 800; font-size: 30px; letter-spacing: -0.02em; margin: 0; max-width: 420px; line-height: 1.1; color: var(--ivory); }
+  .foot a { color: #C9C2B8; text-decoration: none; font-size: 15px; display: block; margin-top: 10px; transition: color var(--dur) var(--ease-out); }
+  .foot a:hover { color: var(--coral-300); }
+  .foot .col b { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: #6B635B; font-weight: 600; }
+  .copy { margin-top: 48px; padding-top: 24px; border-top: 1px solid #463F39; font-family: var(--font-mono); font-size: 12px; color: #6B635B; display: flex; justify-content: space-between; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap nav">
+    <a class="brand" href="#top">
+      <span class="mono-mark">rbd</span>
+      <b>Regina de Brito Duarte</b>
+    </a>
+    <nav class="links">
+      <a href="#research">Research</a>
+      <a href="#writing">Writing</a>
+      <a href="#about">About</a>
+      <a class="btn btn--coral" href="#contact">Download CV</a>
+    </nav>
+  </div>
+</header>
+
+<a id="top"></a>
+<div class="hero">
+  <div class="wrap">
+    <img class="bloom" src="../../assets/motifs/agent-bloom.png" alt="" />
+    <span class="eyebrow">AI · HCI · Evidence-based policy</span>
+    <h1>I study how people and AI <span style="color:var(--coral-500)">decide together</span>.</h1>
+    <p class="lead">PhD researcher at Instituto Superior Técnico &amp; the Center for Responsible AI, working on calibrated reliance, explainability, and multi-agent teamwork — and how that evidence should shape public decisions.</p>
+    <div class="cta">
+      <a class="btn btn--coral" href="https://www.linkedin.com/in/regina-duarte/" target="_blank" rel="noopener">Connect on LinkedIn →</a>
+      <a class="btn btn--outline" href="#research">Read the research</a>
+    </div>
+  </div>
+</div>
+
+<section id="research">
+  <div class="wrap">
+    <div class="sec-head">
+      <div>
+        <span class="eyebrow">Selected work</span>
+        <h2>Research</h2>
+      </div>
+      <a href="#" style="font-family:var(--font-mono); font-size:13px; color:var(--coral-700); text-decoration:none;">All publications →</a>
+    </div>
+    <div class="research">
+      <article class="paper">
+        <div class="meta"><span class="badge">CHI · 2025</span><span class="year">Full paper</span></div>
+        <h3>Calibrating reliance: how explanations change when people override AI</h3>
+        <p>A study of 1,240 participants showing that explanations reduce over-reliance most when they make disagreement legible — not when they justify the AI.</p>
+        <div class="tags"><span class="tag tag--coral">Explainability</span><span class="tag">Trust calibration</span><span class="tag">Decision-making</span></div>
+      </article>
+      <article class="paper">
+        <div class="meta"><span class="badge badge--iris">AAMAS · 2024</span><span class="year">Full paper</span></div>
+        <h3>Reliance in the room: multi-agent dynamics in group decisions</h3>
+        <p>When several agents advise a team, reliance shifts with social context. We map how critical-thinking prompts restore calibrated trust.</p>
+        <div class="tags"><span class="tag">Multi-agent</span><span class="tag tag--coral">Team dynamics</span><span class="tag">HCI</span></div>
+      </article>
+      <article class="paper">
+        <div class="meta"><span class="badge">Policy · 2024</span><span class="year">Brief</span></div>
+        <h3>From lab to ledger: evidence standards for AI in public services</h3>
+        <p>An evidence-based framework for evaluating AI decision support before it reaches citizens.</p>
+        <div class="tags"><span class="tag">Public policy</span><span class="tag">Evaluation</span></div>
+      </article>
+      <article class="paper">
+        <div class="meta"><span class="badge badge--iris">Preprint · 2026</span><span class="year">Under review</span></div>
+        <h3>The cost of confidence: over-reliance on assertive AI</h3>
+        <p>Confidence cues drive acceptance independent of accuracy. We quantify the gap and test interface remedies.</p>
+        <div class="tags"><span class="tag tag--coral">Over-reliance</span><span class="tag">Interface design</span></div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section id="writing">
+  <div class="wrap">
+    <div class="writing">
+      <div class="sec-head" style="margin-bottom:28px;">
+        <div>
+          <span class="eyebrow">LinkedIn · carousels &amp; notes</span>
+          <h2>Writing</h2>
+        </div>
+      </div>
+      <div class="posts">
+        <a class="post" href="#">
+          <div class="k">Carousel</div>
+          <h4>When should we trust the machine?</h4>
+          <div class="read">5 slides · 2.4k views</div>
+        </a>
+        <a class="post" href="#">
+          <div class="k">Note</div>
+          <h4>Why "more accurate" isn't "more useful" for AI advice</h4>
+          <div class="read">4 min read</div>
+        </a>
+        <a class="post" href="#">
+          <div class="k">Carousel</div>
+          <h4>Three myths about explainable AI in policy</h4>
+          <div class="read">6 slides · 1.8k views</div>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="about">
+  <div class="wrap">
+    <div class="about">
+      <div class="portrait">
+        <svg width="150" height="200" viewBox="0 0 48 80" style="display:block;"><circle cx="24" cy="14" r="12.5" fill="var(--ink-900)" opacity="0.82"/><path d="M11,53 C11,40.5 16.6,33 24,33 C31.4,33 37,40.5 37,53 L37,70 C37,73 35,75 32,75 L16,75 C13,75 11,73 11,70 Z" fill="var(--ink-900)" opacity="0.82"/></svg>
+      </div>
+      <div class="about-body">
+        <span class="eyebrow">About</span>
+        <h2>Research that takes human judgment seriously.</h2>
+        <p>I study what happens when humans and AI make decisions together: how behavior changes when AI enters the loop, and how to design systems that genuinely improve human judgment rather than just replace it.</p>
+        <p>I'm a PhD researcher at Instituto Superior Técnico and the Center for Responsible AI. My work spans clinical decision-making, fake news detection, and group dynamics, with publications at ACM CHI and ACM Transactions on Computing for Healthcare.</p>
+        <p>Before the PhD, I spent three years as a data scientist in banking and consulting, working on credit risk models, regulatory compliance, and retail forecasting.</p>
+        <p>Beyond research, I care about how science reaches decision-makers in government, institutions, and public policy broadly. I think AI has an important role there too: not just as a policy subject, but as a tool to make the path from evidence to action faster and more effective.</p>
+        <p>If you work on responsible AI, behavioral design, HCI, or evidence-based policy, I'd love to connect.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer id="contact">
+  <div class="wrap">
+    <div class="foot">
+      <h3>Let's talk about human-AI decisions.</h3>
+      <div class="col">
+        <b>Connect</b>
+        <a href="https://www.linkedin.com/in/regina-duarte/" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="#">Email</a>
+        <a href="#">Google Scholar</a>
+      </div>
+      <div class="col">
+        <b>More</b>
+        <a href="#">Publications</a>
+        <a href="#">CV (PDF)</a>
+        <a href="#">Talks</a>
+      </div>
+    </div>
+    <div class="copy">
+      <span>© 2026 Regina de Brito Duarte</span>
+      <span>Lisbon, Portugal</span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

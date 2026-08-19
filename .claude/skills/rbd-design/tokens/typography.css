@@ -1,0 +1,42 @@
+/* ============================================================
+   TYPOGRAPHY TOKENS
+   Display : Bricolage Grotesque — characterful, modern, warm
+   Text    : Public Sans — neutral, credible (US gov typeface)
+   Mono    : IBM Plex Mono — research / technical signal
+   (See fonts.css. All three are substitution choices — the
+    source deck's fonts were undefined; flag to swap.)
+   ============================================================ */
+:root {
+  --font-display: 'Bricolage Grotesque', 'Trebuchet MS', system-ui, sans-serif;
+  --font-text:    'Public Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono:    'IBM Plex Mono', ui-monospace, 'SFMono-Regular', monospace;
+
+  --weight-regular:  400;
+  --weight-medium:   500;
+  --weight-semibold: 600;
+  --weight-bold:     700;
+  --weight-extra:    800;
+
+  /* Type scale (web / UI). For slides & carousels scale up in px. */
+  --text-display-xl: 4.5rem;   /* 72 */
+  --text-display-l:  3.5rem;   /* 56 */
+  --text-display-m:  2.75rem;  /* 44 */
+  --text-headline:   2rem;     /* 32 */
+  --text-title:      1.5rem;   /* 24 */
+  --text-subtitle:   1.25rem;  /* 20 */
+  --text-body-l:     1.125rem; /* 18 */
+  --text-body:       1rem;     /* 16 */
+  --text-body-s:     0.9375rem;/* 15 */
+  --text-caption:    0.8125rem;/* 13 */
+  --text-eyebrow:    0.75rem;  /* 12 */
+
+  --leading-tight:   1.08;
+  --leading-snug:    1.2;
+  --leading-normal:  1.5;
+  --leading-relaxed: 1.65;
+
+  --tracking-tight:  -0.02em;
+  --tracking-normal: 0;
+  --tracking-wide:   0.04em;
+  --tracking-eyebrow:0.16em;   /* mono eyebrows / kickers */
+}

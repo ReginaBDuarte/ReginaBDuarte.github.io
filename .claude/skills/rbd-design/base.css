@@ -1,0 +1,59 @@
+/* ============================================================
+   BASE LAYER — light resets + a few brand helper classes.
+   Tokens do the heavy lifting; this just makes plain HTML
+   (carousels, slides, specimen cards) look on-brand by default.
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg-canvas);
+  color: var(--text-body);
+  font-family: var(--font-text);
+  font-size: var(--text-body);
+  line-height: var(--leading-normal);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  color: var(--text-strong);
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-tight);
+  font-weight: var(--weight-bold);
+  margin: 0;
+}
+
+a { color: var(--accent-text); text-decoration-thickness: 1.5px; text-underline-offset: 2px; }
+
+/* — Mono eyebrow / kicker — the brand's signature label style — */
+.rbd-eyebrow {
+  font-family: var(--font-mono);
+  font-size: var(--text-eyebrow);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--accent-text);
+}
+
+/* — Surfaces — */
+.rbd-card {
+  background: var(--surface-card);
+  border: var(--border-hair) solid var(--border-soft);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-sm);
+}
+
+/* — Hand-drawn underline accent (the deck's purple squiggle) — */
+.rbd-underline {
+  position: relative;
+  display: inline;
+  background-image: linear-gradient(var(--iris-300), var(--iris-300));
+  background-repeat: no-repeat;
+  background-position: 0 92%;
+  background-size: 100% 0.18em;
+  border-radius: 2px;
+}
+
+::selection { background: var(--coral-200); color: var(--ink-900); }

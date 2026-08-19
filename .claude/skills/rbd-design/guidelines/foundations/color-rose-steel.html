@@ -1,0 +1,29 @@
+<!-- @dsCard group="Colors" viewport="700x150" name="Rose & Steel" subtitle="Warm tertiary (#E8AFB0) + data/chart steel blue (#5A76A4)" -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<link rel="stylesheet" href="../../styles.css" />
+<style>
+  body { margin: 0; background: var(--bg-canvas); padding: 22px; }
+  .ramp { display: flex; gap: 8px; }
+  .chip { flex: 1; display: flex; flex-direction: column; gap: 8px; }
+  .sw { height: 64px; border-radius: 12px; box-shadow: inset 0 0 0 1px rgba(0,0,0,.05); }
+  .name { font-family: var(--font-mono); font-size: 11px; color: var(--text-body); }
+  .hex { font-family: var(--font-mono); font-size: 10px; color: var(--text-faint); text-transform: uppercase; }
+  .gap { width: 18px; }
+  .base { box-shadow: inset 0 0 0 2px var(--ink-900); }
+</style>
+</head>
+<body>
+  <div class="ramp">
+    <div class="chip"><div class="sw" style="background:var(--rose-200)"></div><span class="name">rose-200</span><span class="hex">#F3D2D3</span></div>
+    <div class="chip"><div class="sw base" style="background:var(--rose-300)"></div><span class="name">rose-300 ◆</span><span class="hex">#E8AFB0</span></div>
+    <div class="chip"><div class="sw" style="background:var(--rose-500)"></div><span class="name">rose-500</span><span class="hex">#C56F71</span></div>
+    <div class="gap"></div>
+    <div class="chip"><div class="sw" style="background:var(--steel-300)"></div><span class="name">steel-300</span><span class="hex">#92A4C4</span></div>
+    <div class="chip"><div class="sw base" style="background:var(--steel-500)"></div><span class="name">steel-500 ◆</span><span class="hex">#5A76A4</span></div>
+    <div class="chip"><div class="sw" style="background:var(--steel-700)"></div><span class="name">steel-700</span><span class="hex">#2F4364</span></div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,14 @@
+---
+// Renders `value` as plain text, unless it's still an owed [BRACKET] token —
+// in which case it renders as a visibly-distinct iris chip so it can never
+// ship silently as if it were real content.
+import { isPlaceholder } from '../lib/placeholder';
+
+interface Props {
+  value: string;
+}
+
+const { value } = Astro.props;
+const owed = isPlaceholder(value);
+---
+{owed ? <span class="placeholder-chip">{value}</span> : value}

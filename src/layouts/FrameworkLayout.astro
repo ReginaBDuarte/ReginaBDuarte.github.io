@@ -1,0 +1,50 @@
+---
+// Standalone shell for the AI-Assisted Decision-Making framework — deliberately
+// NOT the site's Layout.astro. No Header (site nav, rbd brand mark), no Footer
+// (site-wide contact strip). Reachable from the main site via a link, but once
+// here it reads as its own thing, not a page "inside" reginabduarte.github.io.
+//
+// Kept independent on purpose: the framework pages (src/pages/framework/**),
+// this layout, src/lib/aidm.ts, src/data/aidm-framework.json, and
+// src/components/aidm/** are the complete, self-contained set of files needed
+// to run this on a different server. The only site-wide dependencies left are
+// src/styles/global.css (design tokens — portable, just CSS) and
+// src/i18n/ui.ts (only for the EN/PT toggle on Level 1; drop it if the
+// framework moves somewhere that doesn't need Portuguese).
+import '../styles/global.css';
+import { getCanonicalPath, localizePath, languages, defaultLang, type Lang } from '../i18n/ui';
+
+interface Props {
+  title: string;
+  description: string;
+  // Set false for pages with no translated counterpart (e.g. the English-only
+  // study pages) so hreflang alternates aren't emitted pointing at URLs that
+  // don't exist.
+  translated?: boolean;
+}
+const { title, description, translated = true } = Astro.props;
+const lang = (Astro.currentLocale ?? defaultLang) as Lang;
+const canonical = getCanonicalPath(Astro.url.pathname);
+---
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="canonical" href={new URL(Astro.url.pathname, Astro.site)} />
+    {translated && (Object.keys(languages) as Lang[]).map((code) => (
+      <link rel="alternate" hreflang={code} href={new URL(localizePath(canonical, code), Astro.site)} />
+    ))}
+    {translated && (
+      <link rel="alternate" hreflang="x-default" href={new URL(localizePath(canonical, defaultLang), Astro.site)} />
+    )}
+    <title>{title}</title>
+    <meta name="description" content={description} />
+  </head>
+  <body>
+    <main>
+      <slot />
+    </main>
+  </body>
+</html>

@@ -1,0 +1,64 @@
+@import './rbd/styles.css';
+
+/* ============================================================
+   SITE-LEVEL LAYER — composition on top of the rbd-design tokens.
+   Keep page-specific rules in their own .astro <style>; this file
+   is for things shared across every page (layout shell, nav,
+   placeholder chips, the two reusable "brand moment" patterns:
+   the framework highlight card and the research row).
+   ============================================================ */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+}
+
+.wrap {
+  max-width: var(--maxw-content);
+  margin: 0 auto;
+  padding: 0 40px;
+}
+
+a { color: inherit; }
+
+img { max-width: 100%; display: block; }
+
+/* — Placeholder chip: anything Regina still owes renders visibly distinct.
+   Fixed (not em-relative) sizing on purpose — it must stay a small, legible
+   tag even when it sits inside a large display heading, and its line-height
+   must not fight the heading's own tight line-height. — */
+.placeholder-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 500;
+  line-height: 1.5;
+  color: var(--iris-700);
+  background: var(--iris-100);
+  border: 1px dashed var(--iris-400);
+  border-radius: 6px;
+  padding: 2px 8px;
+  vertical-align: middle;
+}
+
+/* — Fade-up entrance, used sparingly per the motion rules — */
+@keyframes rbdFadeUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.fade-up {
+  animation: rbdFadeUp var(--dur-slow) var(--ease-out) both;
+}
+
+/* — Section rhythm — */
+section { padding: 72px 0; }
+
+@media (max-width: 720px) {
+  .wrap { padding: 0 20px; }
+  section { padding: 48px 0; }
+}

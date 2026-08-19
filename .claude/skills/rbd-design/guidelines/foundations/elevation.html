@@ -1,0 +1,24 @@
+<!-- @dsCard group="Spacing" viewport="700x170" name="Elevation" subtitle="Soft, warm-tinted shadows — the brand is mostly flat" -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<link rel="stylesheet" href="../../styles.css" />
+<style>
+  body { margin: 0; background: var(--bg-canvas); padding: 26px; }
+  .row { display: flex; gap: 28px; }
+  .col { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+  .box { width: 110px; height: 70px; background: var(--paper); border-radius: 14px; }
+  .tok { font-family: var(--font-mono); font-size: 11px; color: var(--text-faint); }
+</style>
+</head>
+<body>
+  <div class="row">
+    <div class="col"><div class="box" style="box-shadow:var(--shadow-sm)"></div><span class="tok">shadow-sm</span></div>
+    <div class="col"><div class="box" style="box-shadow:var(--shadow-md)"></div><span class="tok">shadow-md</span></div>
+    <div class="col"><div class="box" style="box-shadow:var(--shadow-lg)"></div><span class="tok">shadow-lg</span></div>
+    <div class="col"><div class="box" style="box-shadow:var(--shadow-accent)"></div><span class="tok">shadow-accent</span></div>
+    <div class="col"><div class="box" style="box-shadow:var(--shadow-iris)"></div><span class="tok">shadow-iris</span></div>
+  </div>
+</body>
+</html>

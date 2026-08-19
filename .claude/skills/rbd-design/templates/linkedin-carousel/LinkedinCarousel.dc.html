@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- @template name="LinkedIn carousel" description="5-page 4:5 carousel (1080×1350) in the RBD brand — cover, context, idea, evidence, CTA" -->
+<helmet>
+<script src="./ds-base.js"></script>
+<style>
+  @keyframes rbdFadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+</style>
+</helmet>
+
+<div style="display:flex; flex-direction:column; align-items:center; gap:40px; padding:40px; background:#E9E3D8; font-family:var(--font-text);">
+
+  <!-- ============ PAGE 1 — COVER ============ -->
+  <section data-screen-label="Carousel 1/5" style="position:relative; width:1080px; height:1350px; background:var(--ivory); overflow:hidden; box-shadow:0 18px 50px rgba(46,42,38,0.18); border-radius:8px;">
+    <div style="position:absolute; inset:0; padding:96px 90px; display:flex; flex-direction:column;">
+      <div style="font-family:var(--font-mono); font-size:23px; font-weight:500; letter-spacing:0.18em; text-transform:uppercase; color:var(--coral-700); display:flex; align-items:center; gap:16px;">
+        <span style="width:42px; height:3px; background:var(--coral-400); border-radius:3px;"></span>AI · HCI · Evidence-based policy
+      </div>
+      <div style="flex:1;"></div>
+      <h1 style="font-family:var(--font-display); font-weight:800; font-size:104px; line-height:1.0; letter-spacing:-0.025em; color:var(--ink-900); margin:0;">
+        When should we <span style="color:var(--coral-500);">trust</span> the machine?
+      </h1>
+      <svg width="360" height="24" viewBox="0 0 200 16" fill="none" preserveAspectRatio="none" style="margin:26px 0 0;"><path d="M2,9 C26,2.5 46,13.5 70,8.5 C94,3.5 116,13 140,8 C160,4 182,10.5 198,6.5" stroke="var(--iris-300)" stroke-width="4" stroke-linecap="round"/></svg>
+      <p style="font-size:36px; line-height:1.4; color:var(--ink-600); margin:34px 0 0; max-width:760px;">
+        Five things my research taught me about calibrating reliance on AI — and why it matters for public decisions.
+      </p>
+      <div style="flex:1;"></div>
+      <img src="../../assets/motifs/agent-bloom.png" alt="" style="position:absolute; top:150px; right:84px; width:168px; height:auto; opacity:0.96;" />
+      <div style="display:flex; align-items:center; justify-content:space-between;">
+        <div style="display:flex; align-items:center; gap:18px;">
+          <div style="width:62px; height:62px; border-radius:16px; background:var(--coral-300); color:var(--ink-900); display:flex; align-items:center; justify-content:center; font-family:var(--font-display); font-weight:800; font-size:24px; letter-spacing:-0.05em;">rbd</div>
+          <div>
+            <div style="font-family:var(--font-display); font-weight:700; font-size:25px; color:var(--ink-900); line-height:1;">Regina de Brito Duarte</div>
+            <div style="font-family:var(--font-mono); font-size:17px; color:var(--text-muted); margin-top:5px;">linkedin.com/in/regina-duarte</div>
+          </div>
+        </div>
+        <div style="font-family:var(--font-mono); font-size:19px; color:var(--text-faint);">01 / 05</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PAGE 2 — CONTEXT ============ -->
+  <section data-screen-label="Carousel 2/5" style="position:relative; width:1080px; height:1350px; background:var(--ivory); overflow:hidden; box-shadow:0 18px 50px rgba(46,42,38,0.18); border-radius:8px;">
+    <div style="position:absolute; inset:0; padding:96px 90px; display:flex; flex-direction:column;">
+      <div style="font-family:var(--font-mono); font-size:21px; font-weight:500; letter-spacing:0.16em; text-transform:uppercase; color:var(--iris-700);">— The problem</div>
+      <h2 style="font-family:var(--font-display); font-weight:800; font-size:72px; line-height:1.04; letter-spacing:-0.02em; color:var(--ink-900); margin:24px 0 0; max-width:880px;">
+        More accurate AI doesn't mean better decisions.
+      </h2>
+      <p style="font-size:36px; line-height:1.45; color:var(--ink-700); margin:40px 0 0; max-width:840px;">
+        People <span style="background:var(--coral-200); padding:2px 12px; border-radius:8px;">over-rely</span> on confident systems and <span style="background:var(--iris-200); padding:2px 12px; border-radius:8px;">under-rely</span> on ones they distrust. The goal isn't more trust — it's <em style="font-style:normal; color:var(--coral-600); font-weight:600;">calibrated</em> reliance.
+      </p>
+      <div style="flex:1;"></div>
+      <div style="display:flex; gap:28px;">
+        <div style="flex:1; background:var(--coral-100); border-radius:20px; padding:36px;">
+          <div style="font-family:var(--font-display); font-weight:800; font-size:64px; color:var(--coral-600); line-height:1;">↑</div>
+          <div style="font-family:var(--font-display); font-weight:700; font-size:30px; color:var(--ink-900); margin-top:14px;">Over-reliance</div>
+          <div style="font-size:25px; color:var(--ink-600); margin-top:8px; line-height:1.35;">Accepting wrong AI advice.</div>
+        </div>
+        <div style="flex:1; background:var(--iris-100); border-radius:20px; padding:36px;">
+          <div style="font-family:var(--font-display); font-weight:800; font-size:64px; color:var(--iris-600); line-height:1;">↓</div>
+          <div style="font-family:var(--font-display); font-weight:700; font-size:30px; color:var(--ink-900); margin-top:14px;">Under-reliance</div>
+          <div style="font-size:25px; color:var(--ink-600); margin-top:8px; line-height:1.35;">Ignoring correct AI advice.</div>
+        </div>
+      </div>
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-top:54px;">
+        <div style="font-family:var(--font-mono); font-size:17px; color:var(--text-muted);">linkedin.com/in/regina-duarte</div>
+        <div style="font-family:var(--font-mono); font-size:19px; color:var(--text-faint);">02 / 05</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PAGE 3 — KEY IDEA ============ -->
+  <section data-screen-label="Carousel 3/5" style="position:relative; width:1080px; height:1350px; background:var(--ink-900); overflow:hidden; box-shadow:0 18px 50px rgba(46,42,38,0.18); border-radius:8px;">
+    <div style="position:absolute; inset:0; padding:96px 90px; display:flex; flex-direction:column;">
+      <div style="font-family:var(--font-mono); font-size:21px; font-weight:500; letter-spacing:0.16em; text-transform:uppercase; color:var(--coral-300);">— The idea</div>
+      <div style="flex:1;"></div>
+      <h2 style="font-family:var(--font-display); font-weight:800; font-size:84px; line-height:1.05; letter-spacing:-0.02em; color:var(--ivory); margin:0;">
+        Explanations work — but <span style="color:var(--coral-300);">only when they help you say no.</span>
+      </h2>
+      <p style="font-size:34px; line-height:1.45; color:#C9C2B8; margin:40px 0 0; max-width:820px;">
+        A good explanation isn't decoration. It should make it easier to override the AI when it's wrong — not just nod along when it's right.
+      </p>
+      <div style="flex:1;"></div>
+      <div style="display:flex; align-items:center; justify-content:space-between;">
+        <div style="font-family:var(--font-mono); font-size:17px; color:#8A8278;">linkedin.com/in/regina-duarte</div>
+        <div style="font-family:var(--font-mono); font-size:19px; color:#6B635B;">03 / 05</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PAGE 4 — EVIDENCE ============ -->
+  <section data-screen-label="Carousel 4/5" style="position:relative; width:1080px; height:1350px; background:var(--ivory); overflow:hidden; box-shadow:0 18px 50px rgba(46,42,38,0.18); border-radius:8px;">
+    <div style="position:absolute; inset:0; padding:96px 90px; display:flex; flex-direction:column;">
+      <div style="font-family:var(--font-mono); font-size:21px; font-weight:500; letter-spacing:0.16em; text-transform:uppercase; color:var(--coral-700);">— The evidence</div>
+      <h2 style="font-family:var(--font-display); font-weight:800; font-size:68px; line-height:1.05; letter-spacing:-0.02em; color:var(--ink-900); margin:24px 0 0;">
+        What the studies show
+      </h2>
+      <div style="flex:1;"></div>
+      <div style="display:flex; flex-direction:column; gap:34px;">
+        <div style="display:flex; align-items:baseline; gap:30px;">
+          <div style="font-family:var(--font-display); font-weight:800; font-size:96px; color:var(--coral-500); line-height:0.9; min-width:230px;">−27%</div>
+          <div style="font-size:31px; color:var(--ink-700); line-height:1.35;">over-reliance when explanations were shown in group decisions.</div>
+        </div>
+        <div style="height:1px; background:var(--border);"></div>
+        <div style="display:flex; align-items:baseline; gap:30px;">
+          <div style="font-family:var(--font-display); font-weight:800; font-size:96px; color:var(--iris-600); line-height:0.9; min-width:230px;">1,240</div>
+          <div style="font-size:31px; color:var(--ink-700); line-height:1.35;">participants across four controlled studies.</div>
+        </div>
+        <div style="height:1px; background:var(--border);"></div>
+        <div style="display:flex; align-items:baseline; gap:30px;">
+          <div style="font-family:var(--font-display); font-weight:800; font-size:96px; color:var(--steel-500); line-height:0.9; min-width:230px;">3×</div>
+          <div style="font-size:31px; color:var(--ink-700); line-height:1.35;">faster trust calibration with critical-thinking prompts.</div>
+        </div>
+      </div>
+      <div style="flex:1;"></div>
+      <div style="display:flex; align-items:center; justify-content:space-between;">
+        <div style="font-family:var(--font-mono); font-size:17px; color:var(--text-muted);">linkedin.com/in/regina-duarte</div>
+        <div style="font-family:var(--font-mono); font-size:19px; color:var(--text-faint);">04 / 05</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PAGE 5 — CTA ============ -->
+  <section data-screen-label="Carousel 5/5" style="position:relative; width:1080px; height:1350px; background:var(--coral-300); overflow:hidden; box-shadow:0 18px 50px rgba(46,42,38,0.18); border-radius:8px;">
+    <div style="position:absolute; inset:0; padding:96px 90px; display:flex; flex-direction:column;">
+      <img src="../../assets/motifs/agent-bloom.png" alt="" style="width:120px; height:auto;" />
+      <div style="flex:1;"></div>
+      <h2 style="font-family:var(--font-display); font-weight:800; font-size:88px; line-height:1.04; letter-spacing:-0.02em; color:var(--ink-900); margin:0;">
+        I study how people and AI decide together.
+      </h2>
+      <p style="font-size:36px; line-height:1.4; color:var(--ink-800); margin:36px 0 0; max-width:780px;">
+        Follow for research-backed notes on AI, human-computer interaction, and evidence-based policy.
+      </p>
+      <div style="flex:1;"></div>
+      <div style="display:flex; align-items:center; gap:20px; background:var(--ink-900); align-self:flex-start; padding:22px 34px; border-radius:999px;">
+        <div style="width:54px; height:54px; border-radius:14px; background:var(--coral-300); color:var(--ink-900); display:flex; align-items:center; justify-content:center; font-family:var(--font-display); font-weight:800; font-size:21px; letter-spacing:-0.05em;">rbd</div>
+        <div style="font-family:var(--font-display); font-weight:700; font-size:30px; color:var(--ivory);">Connect on LinkedIn</div>
+      </div>
+      <div style="display:flex; align-items:center; justify-content:flex-end; margin-top:40px;">
+        <div style="font-family:var(--font-mono); font-size:19px; color:rgba(30,27,24,0.5);">05 / 05</div>
+      </div>
+    </div>
+  </section>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1160,&quot;height&quot;:760}}"></script>
+</body>
+</html>

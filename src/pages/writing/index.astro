@@ -1,0 +1,72 @@
+---
+// Route + template only — intentionally not linked from the nav (Header.astro)
+// until at least one post exists. See CLAUDE.md §Writing page.
+import Layout from '../../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+import { useTranslations, defaultLang, type Lang } from '../../i18n/ui';
+
+const lang = (Astro.currentLocale ?? defaultLang) as Lang;
+const t = useTranslations(lang);
+
+const posts = (await getCollection('writing')).sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
+);
+---
+<Layout title={t.meta.writingTitle} description={t.meta.writingDescription}>
+  <section class="header">
+    <div class="wrap">
+      <h1>{t.writingPage.heading}</h1>
+    </div>
+  </section>
+
+  {posts.length > 0 && (
+    <section class="list">
+      <div class="wrap">
+        {posts.map((post) => (
+          <a class="row" href={`/writing/${post.slug}/`}>
+            <h2>{post.data.title}</h2>
+            <p>{post.data.standfirst}</p>
+            <span class="date">{post.data.date.toLocaleDateString('en-GB', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+          </a>
+        ))}
+      </div>
+    </section>
+  )}
+</Layout>
+
+<style>
+  .header h1 {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: var(--text-display-m);
+    letter-spacing: var(--tracking-tight);
+    color: var(--ink-900);
+    margin: 0;
+  }
+  .row {
+    display: block;
+    text-decoration: none;
+    padding: 28px 0;
+    border-bottom: 1px solid var(--border-soft);
+  }
+  .row:first-child { border-top: 1px solid var(--border-soft); }
+  .row h2 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: var(--text-title);
+    color: var(--ink-900);
+    margin: 0;
+  }
+  .row p {
+    font-size: var(--text-body);
+    color: var(--text-muted);
+    margin: 8px 0 0;
+  }
+  .row .date {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: var(--text-caption);
+    color: var(--text-faint);
+    margin-top: 10px;
+  }
+</style>

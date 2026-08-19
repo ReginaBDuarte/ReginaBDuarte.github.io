@@ -1,0 +1,8 @@
+---
+// Thin locale wrapper — reuses the same page content as src/pages/index.astro.
+// The content component reads its language from `Astro.currentLocale`, which is
+// derived from the request URL, so rendering it here (under /pt/) makes it
+// render in Portuguese with no props needed.
+import Home from '../index.astro';
+---
+<Home />

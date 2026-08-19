@@ -1,0 +1,54 @@
+<!-- @dsCard group="Components" viewport="700x230" name="Tags, Badges & Eyebrow" subtitle="Keyword pills, status badges, mono kickers" -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<link rel="stylesheet" href="../../styles.css" />
+<style>
+  body { margin: 0; background: var(--bg-canvas); padding: 24px; }
+  .wrap { display: flex; flex-direction: column; gap: 18px; }
+  .row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .lbl { font-family: var(--font-mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--text-faint); width: 64px; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../../_ds_bundle.js"></script>
+<script type="text/babel">
+  const { Tag, Badge, Eyebrow } = window.ReginaDeBritoDuarteDesignSystem_6df855;
+  function Demo() {
+    return (
+      <div className="wrap">
+        <div className="row">
+          <span className="lbl">Tags</span>
+          <Tag variant="coral">over-reliance</Tag>
+          <Tag variant="iris">explainability</Tag>
+          <Tag variant="rose">trust</Tag>
+          <Tag variant="steel">multi-agent</Tag>
+          <Tag variant="neutral" dot>in progress</Tag>
+          <Tag variant="highlight">calibration</Tag>
+        </div>
+        <div className="row">
+          <span className="lbl">Badges</span>
+          <Badge variant="coral">New</Badge>
+          <Badge variant="iris">Preprint</Badge>
+          <Badge variant="ink">CHI 2025</Badge>
+          <Badge variant="soft">Dataset</Badge>
+          <Badge variant="outline">Working paper</Badge>
+        </div>
+        <div className="row">
+          <span className="lbl">Eyebrow</span>
+          <Eyebrow>Research · 01</Eyebrow>
+          <Eyebrow variant="iris">Evidence brief</Eyebrow>
+          <Eyebrow variant="muted">Updated 2026</Eyebrow>
+        </div>
+      </div>
+    );
+  }
+  ReactDOM.createRoot(document.getElementById('root')).render(<Demo />);
+</script>
+</body>
+</html>

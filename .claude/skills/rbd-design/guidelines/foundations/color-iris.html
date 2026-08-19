@@ -1,0 +1,29 @@
+<!-- @dsCard group="Colors" viewport="700x150" name="Iris — secondary" subtitle="Soft purple, sampled from the deck (#D8C7FA)" -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<link rel="stylesheet" href="../../styles.css" />
+<style>
+  body { margin: 0; background: var(--bg-canvas); padding: 22px; }
+  .ramp { display: flex; gap: 8px; }
+  .chip { flex: 1; display: flex; flex-direction: column; gap: 8px; }
+  .sw { height: 64px; border-radius: 12px; box-shadow: inset 0 0 0 1px rgba(0,0,0,.05); }
+  .name { font-family: var(--font-mono); font-size: 11px; color: var(--text-body); }
+  .hex { font-family: var(--font-mono); font-size: 10px; color: var(--text-faint); text-transform: uppercase; }
+  .base { box-shadow: inset 0 0 0 2px var(--ink-900); }
+</style>
+</head>
+<body>
+  <div class="ramp">
+    <div class="chip"><div class="sw" style="background:var(--iris-50)"></div><span class="name">iris-50</span><span class="hex">#F4EFFC</span></div>
+    <div class="chip"><div class="sw" style="background:var(--iris-100)"></div><span class="name">iris-100</span><span class="hex">#E6DAF9</span></div>
+    <div class="chip"><div class="sw base" style="background:var(--iris-200)"></div><span class="name">iris-200 ◆</span><span class="hex">#D8C7FA</span></div>
+    <div class="chip"><div class="sw" style="background:var(--iris-300)"></div><span class="name">iris-300</span><span class="hex">#BFA6F0</span></div>
+    <div class="chip"><div class="sw" style="background:var(--iris-400)"></div><span class="name">iris-400</span><span class="hex">#A487E0</span></div>
+    <div class="chip"><div class="sw" style="background:var(--iris-500)"></div><span class="name">iris-500</span><span class="hex">#8A6DCB</span></div>
+    <div class="chip"><div class="sw" style="background:var(--iris-600)"></div><span class="name">iris-600</span><span class="hex">#6E54A8</span></div>
+    <div class="chip"><div class="sw" style="background:var(--iris-700)"></div><span class="name">iris-700</span><span class="hex">#564085</span></div>
+  </div>
+</body>
+</html>

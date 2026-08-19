@@ -1,0 +1,125 @@
+---
+import { useTranslations, getCanonicalPath, localizePath, languages, defaultLang, type Lang } from '../i18n/ui';
+
+const lang = (Astro.currentLocale ?? defaultLang) as Lang;
+const t = useTranslations(lang);
+const canonical = getCanonicalPath(Astro.url.pathname);
+
+const nav = [
+  { href: localizePath('/research/', lang), label: t.nav.research },
+  { href: localizePath('/about/', lang), label: t.nav.about },
+  { href: '#contact', label: t.nav.contact },
+];
+
+const localeLinks = (Object.keys(languages) as Lang[]).map((code) => ({
+  code,
+  label: code.toUpperCase(),
+  href: localizePath(canonical, code),
+  active: code === lang,
+}));
+---
+<header>
+  <div class="wrap nav">
+    <a class="brand" href={localizePath('/', lang)}>
+      <span class="mono-mark">rbd</span>
+      <b>Regina de Brito Duarte</b>
+    </a>
+    <nav class="links">
+      {nav.map((item) => (
+        <a href={item.href}>{item.label}</a>
+      ))}
+      <span class="lang-switch" role="group" aria-label="Language">
+        {localeLinks.map((l, i) => (
+          <>
+            {i > 0 && <span class="lang-sep">/</span>}
+            <a href={l.href} class:list={{ active: l.active }} aria-current={l.active ? 'true' : undefined}>
+              {l.label}
+            </a>
+          </>
+        ))}
+      </span>
+    </nav>
+  </div>
+</header>
+
+<style>
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: color-mix(in srgb, var(--ivory) 88%, transparent);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border-soft);
+  }
+  .nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 72px;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+  }
+  .mono-mark {
+    width: 40px;
+    height: 40px;
+    border-radius: 11px;
+    background: var(--coral-300);
+    color: var(--ink-900);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 15px;
+    letter-spacing: -0.05em;
+  }
+  .brand b {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 17px;
+    color: var(--ink-900);
+    letter-spacing: -0.01em;
+  }
+  .links {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+  }
+  .links a {
+    font-size: 15px;
+    font-weight: 500;
+    text-decoration: none;
+    color: var(--ink-700);
+    transition: color var(--dur) var(--ease-out);
+  }
+  .links a:hover { color: var(--coral-600); }
+
+  .lang-switch {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    padding-left: 6px;
+    border-left: 1px solid var(--border);
+  }
+  .lang-switch a {
+    color: var(--text-faint);
+    font-weight: 600;
+  }
+  .lang-switch a.active {
+    color: var(--coral-600);
+  }
+  .lang-switch .lang-sep {
+    color: var(--border-strong);
+  }
+
+  @media (max-width: 640px) {
+    .brand b { display: none; }
+    .links { gap: 14px; }
+  }
+</style>

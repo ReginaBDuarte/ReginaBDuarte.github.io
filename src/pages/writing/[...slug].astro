@@ -1,0 +1,102 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getCollection, type CollectionEntry } from 'astro:content';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('writing');
+  return posts.map((post) => ({
+    params: { slug: post.slug },
+    props: { post },
+  }));
+}
+
+interface Props {
+  post: CollectionEntry<'writing'>;
+}
+
+const { post } = Astro.props;
+const { title, standfirst, date, readingTime, recommendations } = post.data;
+const { Content } = await post.render();
+---
+<Layout title={`${title} · Regina de Brito Duarte`} description={standfirst}>
+  <article class="post">
+    <div class="wrap">
+      <header>
+        <h1>{title}</h1>
+        <p class="standfirst">{standfirst}</p>
+        <div class="meta">
+          <span>{date.toLocaleDateString('en-GB', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+          <span class="dot">·</span>
+          <span>{readingTime}</span>
+        </div>
+      </header>
+
+      {recommendations && recommendations.length > 0 && (
+        <div class="recommendations">
+          <span class="rec-label">Recommendations</span>
+          <ul>
+            {recommendations.map((r) => <li>{r}</li>)}
+          </ul>
+        </div>
+      )}
+
+      <div class="prose">
+        <Content />
+      </div>
+    </div>
+  </article>
+</Layout>
+
+<style>
+  .post { padding-top: 64px; }
+  header h1 {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: var(--text-display-m);
+    letter-spacing: var(--tracking-tight);
+    color: var(--ink-900);
+    max-width: var(--maxw-prose);
+    margin: 0;
+  }
+  .standfirst {
+    font-size: var(--text-body-l);
+    line-height: var(--leading-relaxed);
+    color: var(--ink-600);
+    max-width: var(--maxw-prose);
+    margin: 20px 0 0;
+  }
+  .meta {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+    font-family: var(--font-mono);
+    font-size: var(--text-caption);
+    color: var(--text-faint);
+  }
+  .recommendations {
+    margin: 40px 0;
+    padding: 24px;
+    background: var(--iris-50);
+    border-radius: var(--radius-lg);
+    max-width: var(--maxw-prose);
+  }
+  .rec-label {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: var(--text-caption);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-wide);
+    color: var(--iris-700);
+    margin-bottom: 12px;
+  }
+  .recommendations ul { margin: 0; padding-left: 20px; }
+  .recommendations li { font-size: var(--text-body); color: var(--ink-800); margin-bottom: 8px; }
+  .prose {
+    max-width: var(--maxw-prose);
+    font-size: var(--text-body-l);
+    line-height: var(--leading-relaxed);
+    color: var(--ink-800);
+    margin-top: 32px;
+  }
+  .prose :global(h2) { margin-top: 40px; }
+</style>

@@ -1,0 +1,272 @@
+---
+import type { Factor } from '../../lib/aidm';
+import { splitSubFactors, getMechanismsForFactor, studiesForMechanism } from '../../lib/aidm';
+
+interface Props {
+  factor: Factor;
+}
+const { factor } = Astro.props;
+const subFactors = splitSubFactors(factor.sub_factors);
+const factorMechanisms = getMechanismsForFactor(factor);
+---
+<dialog id={`modal-${factor.id}`} class="factor-modal" aria-labelledby={`modal-${factor.id}-title`}>
+  <div class="modal-inner">
+    <header class="modal-head">
+      <div>
+        <span class="eyebrow-row">
+          <span class="component">{factor.component}</span>
+          <span class="dot">·</span>
+          <span class="type">{factor.type}</span>
+        </span>
+        <h2 id={`modal-${factor.id}-title`}>{factor.factor}</h2>
+      </div>
+      <div class="head-right">
+        <button type="button" class="close-btn" data-modal-close aria-label="Close">✕</button>
+      </div>
+    </header>
+
+    <p class="definition">{factor.definition}</p>
+
+    {subFactors.length > 0 && (
+      <div class="sub-factors">
+        {subFactors.map((sf) => <span class="chip">{sf}</span>)}
+      </div>
+    )}
+
+    {factorMechanisms.length === 0 ? (
+      <p class="no-mechanisms">No mechanism is linked to this factor yet.</p>
+    ) : (
+      <>
+        <ol class="mechanism-list">
+          {factorMechanisms.map((mechanism, i) => {
+            const { supporting, contradicting } = studiesForMechanism(mechanism);
+            return (
+              <li class="mechanism">
+                <div class="mechanism-head">
+                  <span class="mechanism-number">{i + 1}</span>
+                  <p class="claim">{mechanism.claim}</p>
+                </div>
+                <div class="mechanism-badges">
+                  <span class="support-count">
+                    {mechanism.n_support} supporting{mechanism.n_contradict > 0 ? ` · ${mechanism.n_contradict} contradicting` : ''}
+                  </span>
+                  <button type="button" class="details-btn" data-jump-mechanism={mechanism.id}>Details →</button>
+                </div>
+                <div class="evidence">
+                  {supporting.length > 0 && (
+                    <div class="evidence-group">
+                      <span class="evidence-label support">Supporting</span>
+                      <ul>
+                        {supporting.map((s) => (
+                          <li><a href={`/framework/study/${s.id}/`}>{s.author.split(',')[0]}{s.author.includes(',') ? ' et al.' : ''}, {s.year}</a></li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                  {contradicting.length > 0 && (
+                    <div class="evidence-group">
+                      <span class="evidence-label contradict">Contradicting</span>
+                      <ul>
+                        {contradicting.map((s) => (
+                          <li><a href={`/framework/study/${s.id}/`}>{s.author.split(',')[0]}{s.author.includes(',') ? ' et al.' : ''}, {s.year}</a></li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+              </li>
+            );
+          })}
+        </ol>
+      </>
+    )}
+  </div>
+</dialog>
+
+<style>
+  .factor-modal {
+    max-width: 640px;
+    width: min(92vw, 640px);
+    max-height: 85vh;
+    border: none;
+    border-radius: var(--radius-lg);
+    padding: 0;
+    box-shadow: var(--shadow-lg);
+  }
+  .factor-modal::backdrop {
+    background: rgba(30, 27, 24, 0.5);
+  }
+  .modal-inner {
+    padding: 32px;
+    overflow-y: auto;
+    max-height: 85vh;
+  }
+  .modal-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .eyebrow-row {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+  }
+  .eyebrow-row .dot { margin: 0 4px; }
+  .modal-head h2 {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 24px;
+    color: var(--ink-900);
+    margin: 6px 0 0;
+  }
+  .head-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+  }
+  .close-btn {
+    background: var(--cream);
+    border: none;
+    border-radius: 999px;
+    width: 28px;
+    height: 28px;
+    cursor: pointer;
+    color: var(--ink-700);
+    font-size: 13px;
+  }
+  .close-btn:hover { background: var(--ink-200); }
+
+  .definition {
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--ink-800);
+    margin: 20px 0 0;
+  }
+
+  .sub-factors {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 16px;
+  }
+  .chip {
+    font-size: 12.5px;
+    font-weight: 600;
+    padding: 5px 11px;
+    border-radius: 999px;
+    background: var(--iris-100);
+    color: var(--iris-700);
+  }
+
+  .mechanism-list {
+    list-style: none;
+    margin: 24px 0 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .mechanism {
+    border: 1px solid var(--border-soft);
+    border-radius: var(--radius-md);
+    padding: 14px 16px;
+  }
+  .mechanism-head {
+    display: flex;
+    gap: 10px;
+    align-items: baseline;
+  }
+  .mechanism-number {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--text-faint);
+    flex-shrink: 0;
+  }
+  .claim {
+    font-size: 14.5px;
+    font-weight: 600;
+    line-height: 1.4;
+    color: var(--ink-900);
+    margin: 0;
+  }
+  .mechanism-badges {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin: 8px 0 0 22px;
+  }
+  .support-count {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-faint);
+  }
+  .details-btn {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--coral-700);
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .details-btn:hover { text-decoration: underline; }
+  .evidence {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+    margin: 10px 0 0 22px;
+  }
+  .evidence-label {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .evidence-label.support { color: var(--green-500); }
+  .evidence-label.contradict { color: var(--red-500); }
+  .evidence-group ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .evidence-group li { font-size: 13px; }
+  .evidence-group a {
+    color: var(--coral-700);
+    text-decoration: none;
+  }
+  .evidence-group a:hover { text-decoration: underline; }
+
+  .no-mechanisms {
+    margin-top: 20px;
+    font-size: 14px;
+    color: var(--text-muted);
+    font-style: italic;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .factor-modal {
+      transition: opacity var(--dur) var(--ease-out), transform var(--dur) var(--ease-out), display var(--dur) allow-discrete, overlay var(--dur) allow-discrete;
+      opacity: 0;
+      transform: translateY(8px) scale(0.98);
+    }
+    .factor-modal[open] {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+    @starting-style {
+      .factor-modal[open] {
+        opacity: 0;
+        transform: translateY(8px) scale(0.98);
+      }
+    }
+  }
+</style>

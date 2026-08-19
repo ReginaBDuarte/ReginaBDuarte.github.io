@@ -1,0 +1,44 @@
+---
+// Renders authors_framing as a series of blockquotes, one per excerpt, each with its
+// parenthetical source (e.g. "(results, experiment 1)") as a <cite> — see formatQuotes
+// in src/lib/aidm.ts.
+import { formatQuotes } from '../../lib/aidm';
+
+interface Props {
+  text: string;
+}
+const { text } = Astro.props;
+const quotes = formatQuotes(text);
+---
+{quotes.map((q) => (
+  <blockquote class="author-quote">
+    <p>{q.quote}</p>
+    {q.source && <cite>{q.source}</cite>}
+  </blockquote>
+))}
+
+<style>
+  .author-quote {
+    margin: 0 0 16px;
+    padding-left: 16px;
+    border-left: 3px solid var(--iris-300);
+  }
+  .author-quote:last-child {
+    margin-bottom: 0;
+  }
+  .author-quote p {
+    font-size: 15.5px;
+    font-style: italic;
+    line-height: 1.65;
+    color: var(--ink-800);
+    margin: 0;
+  }
+  .author-quote cite {
+    display: block;
+    margin-top: 6px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-style: normal;
+    color: var(--text-faint);
+  }
+</style>

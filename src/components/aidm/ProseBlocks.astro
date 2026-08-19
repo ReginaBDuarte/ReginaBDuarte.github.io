@@ -1,0 +1,40 @@
+---
+// Renders a free-text Notion field (research questions, experimental design, findings)
+// as paragraphs and, where the source text already reads as a list (RQ1:/H1:/etc., one
+// per line), a <ul> — see formatProse in src/lib/aidm.ts for how that split is decided.
+import { formatProse } from '../../lib/aidm';
+
+interface Props {
+  text: string;
+}
+const { text } = Astro.props;
+const blocks = formatProse(text);
+---
+{blocks.map((block) => (
+  block.type === 'ul' ? (
+    <ul class="prose-list">
+      {block.items!.map((item) => <li>{item}</li>)}
+    </ul>
+  ) : (
+    <p>{block.text}</p>
+  )
+))}
+
+<style>
+  p, .prose-list {
+    font-size: 15.5px;
+    line-height: 1.65;
+    color: var(--ink-800);
+    margin: 0 0 16px;
+  }
+  p:last-child, .prose-list:last-child {
+    margin-bottom: 0;
+  }
+  .prose-list {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+</style>

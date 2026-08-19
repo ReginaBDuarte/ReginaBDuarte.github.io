@@ -1,0 +1,240 @@
+{
+  "meta": {
+    "data_notes": [
+      "Coverage tiers (Well evidenced/Contested/Thin/No evidence yet on factors), status tiers (Above bar/Contested/Below bar on mechanisms), and mechanism direction (Increases/Decreases/No effect/Conditional) were all removed 2026-08-12 at Regina's request: none of these were Notion properties, they were entirely overlay-invented editorial judgement, and she does not want that classification layer on the site. What remains per mechanism is its Notion 'Description' text and its supporting/contradicting studies (n_support/n_contradict, computed from the live relation counts) — mechanisms are ordered by n_support descending everywhere they list.",
+      "The Factors database changed shape since the 2026-08-05 export: 'Need for Cognition' was removed as a factor, and 'Task uncertainty' was split out of 'Difficulty' into its own factor. The 2026-08-05 export's f-need-for-cognition overlay entry is now orphaned (harmless, unused).",
+      "The Mechanisms database grew from 12 to 17 rows between the 2026-08-05 export and this seed (see AIAssistedDM/2026-08-11-mechanisms-proposal.md, which proposed the 5 additions). This overlay only carries direction/notes for the original 12 — the 5 new mechanisms have no editorial direction or notes yet and will render with those blank until filled in.",
+      "'read', 'need_for_cognition', 'own_work', and 'incomplete' are not Notion properties on any database — they only exist in this overlay file, keyed by study id, seeded once from the 2026-08-05 export."
+    ]
+  },
+  "components": [
+    {
+      "id": "human",
+      "label": "Human",
+      "type": "Constraint (inherited)",
+      "note": "What the decision-maker brings. Largely fixed for a given deployment."
+    },
+    {
+      "id": "task",
+      "label": "Task",
+      "type": "Constraint (inherited)",
+      "note": "What the decision is like. Inherited from the domain."
+    },
+    {
+      "id": "ai-ecosystem",
+      "label": "AI Ecosystem",
+      "type": "Lever (designable)",
+      "note": "What can actually be changed at design time. All three factors here are levers."
+    }
+  ],
+  "factors": {
+    "f-expertise": {
+      "gap_note": "Task expertise is well covered. AI literacy has one data point (Leichtmann: no effect). Longitudinal system usage has NONE — every study in the base is a first-encounter study, flagged in CAT §2.2.1."
+    },
+    "f-need-for-cognition": {
+      "gap_note": "CODING GAP, NOT AN EVIDENCE GAP. Three studies (Buçinca 2021, Gajos 2022, Contrastive-misconceptions 2025) measured NFC; the spreadsheet records THAT it was measured but not WHAT it did. Extract the directional findings and this factor becomes live."
+    },
+    "f-team-composition": {
+      "gap_note": "One coded study (Chiang 2023). YOUR CHI 2025 paper is a second and would move this above the bar immediately. This is one of your four thesis contributions — the thinness here is the argument for it."
+    },
+    "f-difficulty": {
+      "gap_note": "Difficulty itself is well covered. Outcome uncertainty rests on a single study and is absent from Fig. 2.1 — add it as a named sub-factor."
+    },
+    "f-stakes": {
+      "gap_note": "All the evidence is on SELF-REPORTED trust. No study in the base tests whether higher stakes change behavioural reliance. That dissociation is worth a study of its own."
+    },
+    "f-stress-time": {
+      "gap_note": "One coded study. Rastogi 2022 (Deciding Fast and Slow) is almost certainly a second but has never been coded — code it and this moves above the bar. Nothing at all on stress that is not time pressure."
+    },
+    "f-ai-performance": {
+      "gap_note": "BIGGEST CODING GAP IN THE BASE. 24 of 35 studies report absolute accuracy but leave accuracy-relative-to-human unresolved, even though Bansal's central finding is about the relative quantity."
+    },
+    "f-ai-design": {
+      "gap_note": "Protocol is genuinely contested 2-2: Green and Buçinca favour human-first, Cabitza found AI-first produced HIGHER accuracy. Embodiment is an empty node — your IROS 2026 submission is the evidence. Confidence display may deserve promotion to its own factor: it calibrated reliance where explanations did not."
+    },
+    "f-xai": {
+      "gap_note": "Densest node in the framework: 7 mechanisms. Explanation QUALITY rests on one study and is absent from Fig. 2.1 entirely. The substitutive/generative distinction is coded from summaries rather than source papers — re-code blind before publishing it."
+    }
+  },
+  "mechanisms": {
+    "m-explanation-stance": {
+      "notes": "MERGED FROM: Gajos and Mamykina (CLEANEST EXPERIMENT IN THE BASE — three conditions, learning gains ONLY where the conclusion was withheld, identical explanatory content), Chen/Liao (within-study: feature-based increased over-reliance, example-based achieved complementarity), Cabitza pro-hoc ('Frictional AI'), Cabitza judicial (oracular to judicial), Ma (procedural deliberation), Buçinca 2021 (cognitive forcing), Buçinca 2025 (contrastive knowledge-gap alignment). TWO CAVEATS THAT MUST BE STATED: (1) GATED BY COGNITIVE LOAD — the two highest-load cases came out flat on over-reliance; (2) SEVERE LAB CONCENTRATION — four of seven are Gajos/Buçinca at Harvard, two are Cabitza/Natali. CONTRADICTION: Cabitza Rams found AI-first produced HIGHER diagnostic accuracy than human-first, with real radiologists on hard cases."
+    },
+    "m-explanation-halo": {
+      "notes": "MERGED FROM: Cabitza 2024 Harmful (the 'XAI HALO EFFECT' — accurate advice plus misleading explanation, participants 'did not verify the correctness of the advice'), Bussone (fuller explanation raised trust AND produced over-reliance), Bansal 2021 ('explanations increased reliance on recommendations even when the AI was incorrect'), He 2025 conversational XAI (understanding and trust both rose while over-reliance was unchanged). THE MECHANISM IS FORM, NOT COST: harm arrives through the explanation looking right, independent of how much effort it demands. Sharpest evidence that an explanation can satisfy a transparency requirement while degrading oversight. CONTRADICTION: Leichtmann found attribution plus example-based explanations improved outcomes and produced better-calibrated trust."
+    },
+    "m-reliance-multidimensional": {
+      "notes": "STRUCTURAL / MEASUREMENT MECHANISM — it constrains how every other row in this table may be read. MERGED FROM: Schemmer (explanations moved RAIR significantly, RSR not at all — uptake of good advice improved, resistance to bad advice did not), Sivaraman (expert reliance is partial and component-wise — 'ignore, trust, or NEGOTIATE' — so binary agreement measures are mis-specified), Buçinca 2020 (proxy tasks do not generalise to real decision tasks and subjective measures do not predict objective performance), He 2025 (understanding and trust rose while over-reliance held constant), Salimzadeh (reliance moved with uncertainty while trust did not move at all). FIVE STUDIES, FOUR INDEPENDENT GROUPS. Practical rule: any mechanism in this table whose only evidence is trust or preference is on weaker ground than one evidenced behaviourally."
+    },
+    "m-explanation-null": {
+      "notes": "MERGED FROM: Alufaisan (three-arm design with a no-AI control — 'the why information provided in explainable AI may not enhance user decision-making'), de Brito Duarte (OWN MSc — explanation effect on trust is jointly conditional on system performance and risk level), Wang and Yin (four XAI methods on two task types — most 'not as helpful as expected and even harmful at times'). CONTESTED BY DESIGN: Vasconcelos and Gajos both produce clear positive effects under specified conditions. The right reading is not that explanations do nothing but that the unconditional question 'do explanations help?' is malformed — which is itself the argument for a factor-conditioned framework."
+    },
+    "m-failure-mental-model": {
+      "notes": "MERGED FROM: Bansal 2019a (error boundary mediates AI accuracy to team performance), Bansal 2019b (updates that improve the model HURT the team by invalidating the learned failure pattern), Zhang 2020 (case-level confidence calibrates, global accuracy cannot), Bansal 2021 (users built mental models from confidence and used it whether or not explanations were shown), Reverberi (experts weight-integrate: OR 3.48 correct vs 1.85 incorrect, with NO explanation), Kiani (model performance in isolation does not transfer; benefit confined to an experience band), Leichtmann (case-level explanation helped, general education about the AI did not). LARGEST AND MOST INDEPENDENT SUPPORT SET IN THE BASE. CONTRADICTION: Bussone found system confidence had only a slight effect — with domain experts, where the mental model may already exist."
+    },
+    "m-second-opinions": {
+      "notes": "MERGED FROM: Lu, Wang and Yin (three pre-registered experiments — ALWAYS-PRESENT second opinions cut over-reliance but RAISED under-reliance, regardless of whether the source was a peer or another AI; SOLICITED second opinions mitigated over-reliance WITHOUT that penalty), Westphal (decision control — empowering users to ADJUST recommendations — raised trust, understanding and compliance, while explanation presence in the same study did the opposite). THE CONTENT IS HELD CONSTANT IN BOTH: what changes is who decides when it arrives and whether it can be altered. Directly relevant to RQ6: a multi-agent setting is by construction the always-present condition, which this mechanism predicts will trade over-reliance for under-reliance."
+    },
+    "m-delivery-register": {
+      "notes": "MERGED FROM: Calisto (assertive versus suggestive tone delivering IDENTICAL breast-cancer diagnostic content; personalising assertiveness to clinician experience REDUCED MEDICAL ERRORS and raised satisfaction), Zhang, Lee and Carter ('embracing' language INCREASED reliance, 'distancing' language REDUCED it — same information, differently worded). TWO INDEPENDENT STUDIES, DIFFERENT POPULATIONS (clinicians and crowdworkers), SAME CONCLUSION. Mechanism is social and communicative rather than cognitive: nothing about the information changes, only the register in which it is asserted, and the optimal register depends on the recipient's expertise. The most under-theorised family in the literature."
+    },
+    "m-protocol-backfire": {
+      "notes": "FROM: Cabitza Rams — AI-FIRST protocols were associated with HIGHER diagnostic accuracy than human-first, with 12 specialist radiologists on knee MRI and 44 ECG readers. The authors name the mechanisms: ALGORITHMIC AVERSION (seeing the AI first can trigger rejection of correct advice) and CONSERVATISM BIAS (committing first can entrench a wrong prior). THIS IS THE DIRECT COUNTERWEIGHT to the withheld-conclusion mechanism, and it is the only study in the base run with real domain experts on genuinely hard clinical cases. Below bar on one study, but it is a high-quality one and the disagreement is real rather than a coding artefact — do not resolve it prematurely."
+    },
+    "m-engagement-cost": {
+      "notes": "MERGED FROM: Vasconcelos (cost-benefit framework, 5 studies N=731, manipulates both cost and benefit), Westphal (only MEASURED mediator in the base — explanation harm ran through increased perceived task complexity), Rastogi (time as the scarce resource), Time-pressure 2024 (pressure raises over-reliance while holding accuracy), Buçinca 2021 (people default to heuristics rather than per-case analysis because analysis is costly). FOUR INDEPENDENT LABS converging from three theories. CONTRADICTION: Green and Chen varied presentation across six conditions — effectively varying cost — and reliance still did not track performance, suggesting cost is not the whole story."
+    },
+    "m-verifiability": {
+      "notes": "MERGED FROM: Salimzadeh ('individuals may lack sufficient capability to verify the correctness of AI advice' under uncertainty), Green and Chen (participants could evaluate neither their own nor the model's accuracy across all six treatments — the 'empty cycle of oversight'), Wang and Yin (explanations convey reasoning but not model uncertainty, leaving no basis for selective override). CRITICALLY DISTINCT FROM THE COST MECHANISM: lowering the price of checking does nothing when checking is not possible. This is the strongest argument in the base against assuming EU AI Act Article 14 human oversight is protective in prognostic or high-uncertainty deployments."
+    },
+    "m-path-dependence": {
+      "notes": "FROM: Wang, Lu and Yin (WWW 2022 Best Paper) — models human acceptance across a SEQUENCE of binary trials using the AI's recommendation and confidence as inputs. The contribution is predictive rather than explanatory, but the structural claim matters: acceptance is treated as accumulating over trials, not as an independent per-case decision. THE ONLY PLACE IN THIS ENTIRE BASE WHERE THE LONGITUDINAL DIMENSION IS TOUCHED, alongside Bansal 2019b on model updates. Every other study is a first encounter with a static system — which is exactly the gap flagged in CAT section 2.2.1 and a live opening for the thesis."
+    },
+    "m-group-deliberation": {
+      "notes": "FROM: Chiang (groups relied on the AI MORE than individuals regardless of correctness, but were MORE CONFIDENT when they did overturn incorrect recommendations, and made fairer decisions on an accuracy-equality criterion; decision accuracy itself did not differ). The group is not a neutral container for AI advice — deliberation appears to redistribute where scrutiny lands rather than increase how much there is. BELOW BAR ON ONE STUDY ONLY. Regina's CHI 2025 paper (The Amplifying Effect of Explainability in Groups) is the second study and would move this above the bar immediately — add it to the evidence base."
+    }
+  },
+  "studies": {
+    "s-bussone-2015": {
+      "read": "Read from source",
+      "need_for_cognition": "Not measured"
+    },
+    "s-bansal-2019-mental-models": {
+      "read": "Read from source",
+      "need_for_cognition": "Not measured"
+    },
+    "s-bansal-2019-updates": {
+      "read": "Read from source",
+      "need_for_cognition": "Not measured"
+    },
+    "s-green-chen-2019": {
+      "read": "Read from source",
+      "need_for_cognition": "Not measured"
+    },
+    "s-bucinca-2020": {
+      "read": "Read from source",
+      "need_for_cognition": "Not measured"
+    },
+    "s-kiani-2020": {
+      "read": "Read from source",
+      "need_for_cognition": "Not measured"
+    },
+    "s-zhang-2020": {
+      "read": "Read from source",
+      "need_for_cognition": "Not measured"
+    },
+    "s-alufaisan-2021": {
+      "read": "Read from source",
+      "need_for_cognition": "Not measured"
+    },
+    "s-bansal-2021": {
+      "read": "Read from source",
+      "need_for_cognition": "Not measured"
+    },
+    "s-bucinca-2021": {
+      "read": "Read from source",
+      "need_for_cognition": "Measured as covariate"
+    },
+    "s-wang-yin-2021": {
+      "read": "Read from source",
+      "need_for_cognition": "Not measured"
+    },
+    "s-gajos-mamykina-2022": {
+      "read": "Read from source",
+      "need_for_cognition": "Not measured"
+    },
+    "s-rastogi-2022": {
+      "read": "Read from source",
+      "need_for_cognition": "Not measured"
+    },
+    "s-reverberi-2022": {
+      "read": "Read from source",
+      "need_for_cognition": "Not measured"
+    },
+    "s-wang-2022-accept": {
+      "read": "Read from source",
+      "need_for_cognition": "Not measured"
+    },
+    "s-zhang-2022-complete-me": {
+      "read": "Read from source",
+      "need_for_cognition": "Not measured"
+    },
+    "s-cabitza-2023-rams": {
+      "read": "Read from source",
+      "need_for_cognition": "Not measured"
+    },
+    "s-calisto-2023": {
+      "read": "Read from source",
+      "need_for_cognition": "Not measured"
+    },
+    "s-chen-2023": {
+      "read": "Read from source",
+      "need_for_cognition": "Not measured"
+    },
+    "s-chiang-2023": {
+      "read": "Read from source",
+      "need_for_cognition": "Not measured"
+    },
+    "s-debritoduarte-2023": {
+      "read": "Partially read",
+      "own_work": true,
+      "need_for_cognition": "Not measured"
+    },
+    "s-leichtmann-2023": {
+      "read": "Read from source",
+      "need_for_cognition": "Not measured"
+    },
+    "s-schemmer-2023": {
+      "read": "Read from source",
+      "need_for_cognition": "Not measured"
+    },
+    "s-sivaraman-2023": {
+      "read": "Read from source",
+      "need_for_cognition": "Not measured"
+    },
+    "s-vasconcelos-2023": {
+      "read": "Read from source",
+      "need_for_cognition": "Not measured"
+    },
+    "s-westphal-2023": {
+      "read": "Read from source",
+      "need_for_cognition": "Not measured"
+    },
+    "s-cabitza-2024-harmful": {
+      "read": "Read from source",
+      "need_for_cognition": "Not measured"
+    },
+    "s-cabitza-2024-prohoc": {
+      "read": "Read from source",
+      "need_for_cognition": "Not measured"
+    },
+    "s-lu-2024": {
+      "read": "Read from source",
+      "need_for_cognition": "Not measured"
+    },
+    "s-salimzadeh-2024": {
+      "read": "Read from source",
+      "need_for_cognition": "Not measured"
+    },
+    "s-timepressure-2024": {
+      "read": "Read from source",
+      "need_for_cognition": "Measured as covariate"
+    },
+    "s-bucinca-2025": {
+      "read": "Read from source",
+      "need_for_cognition": "Not measured"
+    },
+    "s-cabitza-2025-judicial": {
+      "read": "Read from source",
+      "need_for_cognition": "Not measured"
+    },
+    "s-he-2025": {
+      "read": "Read from source",
+      "need_for_cognition": "Not measured"
+    },
+    "s-ma-2025": {
+      "read": "Read from source",
+      "need_for_cognition": "Not measured"
+    }
+  }
+}

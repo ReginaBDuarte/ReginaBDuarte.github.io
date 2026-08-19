@@ -1,0 +1,61 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { useTranslations, defaultLang, type Lang } from '../../i18n/ui';
+
+const lang = (Astro.currentLocale ?? defaultLang) as Lang;
+const t = useTranslations(lang);
+---
+<Layout title={t.meta.aboutTitle} description={t.meta.aboutDescription}>
+  <section class="content">
+    <div class="wrap grid">
+      <div class="portrait">
+        <img src="/portrait.jpg" alt="Regina de Brito Duarte" />
+      </div>
+      <div class="prose">
+        <p>{t.about.paragraph1}</p>
+        <p>{t.about.paragraph2}</p>
+        <p>{t.about.paragraph3}</p>
+        <p>{t.about.paragraph4}</p>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .content {
+    padding-top: 64px;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: 56px;
+    align-items: start;
+  }
+  .portrait {
+    aspect-ratio: 1;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    background: linear-gradient(150deg, var(--iris-200), var(--coral-200));
+  }
+  .portrait img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .prose {
+    max-width: var(--maxw-prose);
+  }
+  .prose p {
+    font-size: var(--text-body-l);
+    line-height: var(--leading-relaxed);
+    color: var(--ink-800);
+    margin: 0 0 24px;
+  }
+  .prose p:last-child { margin-bottom: 0; }
+
+  @media (max-width: 720px) {
+    .grid { grid-template-columns: 1fr; gap: 32px; }
+    .portrait { max-width: 240px; }
+  }
+</style>

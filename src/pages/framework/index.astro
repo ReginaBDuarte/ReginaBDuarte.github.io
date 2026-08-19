@@ -1,0 +1,455 @@
+---
+import FrameworkLayout from '../../layouts/FrameworkLayout.astro';
+import Placeholder from '../../components/Placeholder.astro';
+import FrameworkFigure from '../../components/aidm/FrameworkFigure.astro';
+import FactorModal from '../../components/aidm/FactorModal.astro';
+import MechanismCard from '../../components/aidm/MechanismCard.astro';
+import { getEntry } from 'astro:content';
+import { factors, getMechanismsBySupport } from '../../lib/aidm';
+import { useTranslations, getCanonicalPath, localizePath, languages, defaultLang, type Lang } from '../../i18n/ui';
+
+// Hardcoded absolute URL, deliberately — this is the one intentional link
+// back to the main site from an otherwise-standalone module. A relative "/"
+// would be wrong the moment this framework is deployed on its own server.
+const MAIN_SITE_URL = 'https://reginabduarte.github.io/';
+
+const lang = (Astro.currentLocale ?? defaultLang) as Lang;
+const t = useTranslations(lang);
+const canonical = getCanonicalPath(Astro.url.pathname);
+const localeLinks = (Object.keys(languages) as Lang[]).map((code) => ({
+  code,
+  label: code.toUpperCase(),
+  href: localizePath(canonical, code),
+  active: code === lang,
+}));
+
+const entry = await getEntry('framework', lang);
+const { name, version, updated, licence, whatItIs, feedbackEmail } = entry!.data;
+
+const mechanismsBySupport = getMechanismsBySupport();
+---
+<FrameworkLayout title={t.meta.frameworkTitle} description={whatItIs}>
+  <section class="header">
+    <div class="wrap">
+      <span class="lang-switch">
+        {localeLinks.map((l, i) => (
+          <>
+            {i > 0 && <span class="lang-sep">/</span>}
+            <a href={l.href} class:list={{ active: l.active }} aria-current={l.active ? 'true' : undefined}>{l.label}</a>
+          </>
+        ))}
+      </span>
+      <h1><Placeholder value={name} /> Framework</h1>
+      <p class="what-it-is">{whatItIs}</p>
+      <div class="meta">
+        <span>{t.frameworkCard.version} <Placeholder value={version} /></span>
+        <span class="dot">·</span>
+        <span>{t.frameworkCard.updated} <Placeholder value={updated} /></span>
+        <span class="dot">·</span>
+        <span><Placeholder value={licence} /></span>
+        <span class="dot">·</span>
+        <button id="cite-toggle" type="button" class="cite-cta">{t.frameworkPage.citeThis}</button>
+      </div>
+      <pre id="citation" class="citation" hidden>{t.frameworkPage.citation(name, version, updated)}</pre>
+
+      {lang !== defaultLang && (
+        <p class="data-note">{t.frameworkPage.dataNote}</p>
+      )}
+    </div>
+  </section>
+
+  <section id="about-aidm" class="intro-section">
+    <div class="wrap">
+      <h2>{t.frameworkPage.aboutHeading}</h2>
+      <div class="intro-grid">
+        <div>
+          <h3>{t.frameworkPage.whatItIsHeading}</h3>
+          {t.frameworkPage.whatItIsText.map((paragraph) => <p>{paragraph}</p>)}
+        </div>
+        <div>
+          <h3>{t.frameworkPage.whyItMattersHeading}</h3>
+          {t.frameworkPage.whyItMattersText.map((paragraph) => <p>{paragraph}</p>)}
+          <blockquote class="law-quote">
+            <p>&ldquo;{t.frameworkPage.whyItMattersQuote}&rdquo;</p>
+            <cite>{t.frameworkPage.whyItMattersQuoteCitation}</cite>
+          </blockquote>
+          {t.frameworkPage.whyItMattersOutro.map((paragraph) => <p>{paragraph}</p>)}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="the-framework" class="figure-section">
+    <div class="wrap">
+      <h2>{t.frameworkPage.theFrameworkHeading}</h2>
+      <div class="section-lead framework-intro">
+        {t.frameworkPage.theFrameworkIntro.map((paragraph) => <p set:html={paragraph} />)}
+      </div>
+      <FrameworkFigure interactive />
+      <div class="simplification-note">
+        <p>{t.frameworkPage.simplificationNote}</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="the-evidence" class="narrative-section">
+    <div class="wrap">
+      <h2>{t.frameworkPage.evidenceHeading}</h2>
+      <p class="section-lead">
+        {t.frameworkPage.evidenceLead(mechanismsBySupport.length)}
+      </p>
+      <div class="mechanism-grid" id="mechanism-grid">
+        {mechanismsBySupport.map((mechanism, i) => (
+          <MechanismCard mechanism={mechanism} hidden={i >= 4} />
+        ))}
+      </div>
+      {mechanismsBySupport.length > 4 && (
+        <button type="button" id="mechanisms-show-more" class="show-more-btn">
+          {t.frameworkPage.showAllMechanisms(mechanismsBySupport.length)}
+        </button>
+      )}
+    </div>
+  </section>
+
+  <section id="about-the-evidence" class="about-section">
+    <div class="wrap">
+      <h2>{t.frameworkPage.aboutEvidenceHeading}</h2>
+      {t.frameworkPage.aboutEvidenceText.map((paragraph) => <p>{paragraph}</p>)}
+      <p>{t.frameworkPage.aboutEvidenceLinksPre}<a href="https://app.notion.com/p/8d6bcfe05aa943a7ae89ba583c9166e9?v=c5071d1615b54d41879f885bc52ba45c&source=copy_link" target="_blank" rel="noopener">{t.frameworkPage.aboutEvidenceLink1Label}</a>{t.frameworkPage.aboutEvidenceLinksMid}<a href="https://app.notion.com/p/1544452761aa4c4bac2fa7407af1cdf1?v=25f4ff182ef4492192540eab1d5e8261&source=copy_link" target="_blank" rel="noopener">{t.frameworkPage.aboutEvidenceLink2Label}</a>{t.frameworkPage.aboutEvidenceLinksPost}</p>
+      <div class="coverage-note">
+        <p>
+          {t.frameworkPage.coverageNotePre}
+          <a href={`mailto:${feedbackEmail}`}>{t.frameworkPage.coverageNoteLinkText}</a>
+          {t.frameworkPage.coverageNotePost}
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="feedback-section">
+    <div class="wrap">
+      <p class="feedback">
+        {t.frameworkPage.feedbackPrefix}
+        <a href={`mailto:${feedbackEmail}`}><Placeholder value={feedbackEmail} /></a>.
+        {t.frameworkPage.maintainedByPrefix}
+        <a href={MAIN_SITE_URL}>Regina de Brito Duarte</a>.
+      </p>
+      {t.frameworkPage.disclaimer.map((paragraph) => <p class="disclaimer">{paragraph}</p>)}
+    </div>
+  </section>
+
+  {factors.map((factor) => <FactorModal factor={factor} />)}
+</FrameworkLayout>
+
+<script>
+  const dialogs = Array.from(document.querySelectorAll<HTMLDialogElement>('dialog.factor-modal'));
+  const byId = new Map(dialogs.map((d) => [d.id.replace('modal-', ''), d]));
+  let lastFocused: Element | null = null;
+
+  function openFactor(id: string, pushHistory = true) {
+    const dlg = byId.get(id);
+    if (!dlg || dlg.open) return;
+    lastFocused = document.activeElement;
+    dlg.showModal();
+    document.body.style.overflow = 'hidden';
+    if (pushHistory) history.pushState({ factor: id }, '', `#factor-${id}`);
+  }
+
+  dialogs.forEach((dlg) => {
+    dlg.addEventListener('click', (e) => {
+      if (e.target === dlg) dlg.close();
+    });
+    dlg.addEventListener('close', () => {
+      if (location.hash.startsWith('#factor-')) {
+        history.pushState({}, '', location.pathname + location.search);
+      }
+      if (!dialogs.some((d) => d.open)) document.body.style.overflow = '';
+      if (lastFocused instanceof HTMLElement) lastFocused.focus();
+    });
+  });
+
+  document.querySelectorAll('[data-factor-id], [data-open-factor]').forEach((el) => {
+    const id = el.getAttribute('data-factor-id') || el.getAttribute('data-open-factor');
+    if (id) el.addEventListener('click', () => openFactor(id));
+  });
+  document.querySelectorAll('[data-modal-close]').forEach((btn) => {
+    btn.addEventListener('click', () => (btn.closest('dialog') as HTMLDialogElement | null)?.close());
+  });
+
+  window.addEventListener('popstate', () => {
+    const match = location.hash.match(/^#factor-(.+)$/);
+    if (match && byId.has(match[1])) {
+      openFactor(match[1], false);
+    } else {
+      dialogs.forEach((d) => d.open && d.close());
+    }
+  });
+
+  const initial = location.hash.match(/^#factor-(.+)$/);
+  if (initial && byId.has(initial[1])) openFactor(initial[1], false);
+
+  const citeButton = document.getElementById('cite-toggle');
+  const citation = document.getElementById('citation');
+  citeButton?.addEventListener('click', () => citation?.toggleAttribute('hidden'));
+
+  const showMoreBtn = document.getElementById('mechanisms-show-more');
+  showMoreBtn?.addEventListener('click', () => {
+    document.querySelectorAll<HTMLElement>('#mechanism-grid [hidden]').forEach((el) => {
+      el.hidden = false;
+    });
+    showMoreBtn.remove();
+  });
+
+  // "Details →" inside a factor modal: close the modal, reveal that mechanism's
+  // card if it was collapsed under "Show more", scroll to it, and open its own
+  // Details disclosure so the full description is visible without a second click.
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  document.querySelectorAll<HTMLButtonElement>('[data-jump-mechanism]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const id = btn.getAttribute('data-jump-mechanism');
+      if (!id) return;
+      (btn.closest('dialog') as HTMLDialogElement | null)?.close();
+
+      const card = document.getElementById(`mechanism-${id}`);
+      if (!card) return;
+      if (card.hidden) card.hidden = false;
+
+      const details = card.querySelector<HTMLDetailsElement>('details.details');
+      if (details) details.open = true;
+
+      card.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'center' });
+      card.classList.add('jump-target');
+      setTimeout(() => card.classList.remove('jump-target'), 1600);
+
+      const summary = details?.querySelector('summary');
+      (summary instanceof HTMLElement ? summary : card).focus();
+    });
+  });
+</script>
+
+<style>
+  .header {
+    padding-top: 40px;
+  }
+  .lang-switch {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-mono);
+    font-size: 13px;
+  }
+  .lang-switch a {
+    color: var(--text-faint);
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .lang-switch a.active { color: var(--coral-600); }
+  .lang-switch .lang-sep { color: var(--border-strong); }
+  .header h1 {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: var(--text-display-m);
+    letter-spacing: var(--tracking-tight);
+    color: var(--ink-900);
+    margin: 20px 0 0;
+  }
+  .what-it-is {
+    font-size: var(--text-body-l);
+    line-height: var(--leading-relaxed);
+    color: var(--ink-600);
+    margin: 20px 0 0;
+  }
+  .meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 24px;
+    font-family: var(--font-mono);
+    font-size: var(--text-caption);
+    color: var(--text-faint);
+  }
+  .meta .dot { color: var(--border-strong); }
+  .cite-cta {
+    font-family: var(--font-mono);
+    font-size: var(--text-caption);
+    color: var(--coral-700);
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+  }
+  .cite-cta:hover { text-decoration: underline; }
+  .citation {
+    margin-top: 16px;
+    background: var(--cream);
+    border: 1px solid var(--border-soft);
+    border-radius: var(--radius-sm);
+    padding: 16px;
+    font-family: var(--font-mono);
+    font-size: var(--text-body-s);
+    color: var(--ink-800);
+    white-space: pre-wrap;
+  }
+  .data-note {
+    margin-top: 20px;
+    font-family: var(--font-mono);
+    font-size: var(--text-caption);
+    color: var(--iris-700);
+    background: var(--iris-50);
+    display: inline-block;
+    padding: 8px 12px;
+    border-radius: var(--radius-sm);
+  }
+  .intro-section, .figure-section, .narrative-section, .about-section, .feedback-section {
+    padding: 36px 0;
+  }
+  .intro-section h2, .figure-section h2, .narrative-section h2, .about-section h2 {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: var(--text-headline);
+    letter-spacing: var(--tracking-tight);
+    color: var(--ink-900);
+    margin: 0 0 12px;
+  }
+  .intro-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    margin-top: 24px;
+  }
+  .intro-grid h3 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: var(--text-title);
+    color: var(--ink-900);
+    margin: 0 0 10px;
+  }
+  .intro-grid p {
+    font-size: var(--text-body-l);
+    line-height: var(--leading-relaxed);
+    color: var(--ink-700);
+    margin: 0 0 16px;
+  }
+  .intro-grid p:last-child {
+    margin-bottom: 0;
+  }
+  .law-quote {
+    margin: 8px 0 24px;
+    padding: 20px 24px;
+    border-left: 3px solid var(--iris-300);
+    background: var(--cream);
+    border-radius: var(--radius-sm);
+  }
+  .law-quote p {
+    font-style: italic;
+    font-size: var(--text-body-l);
+    line-height: var(--leading-relaxed);
+    color: var(--ink-800);
+    margin: 0 0 10px;
+  }
+  .law-quote cite {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: var(--text-caption);
+    font-style: normal;
+    color: var(--text-faint);
+  }
+  .section-lead {
+    font-size: var(--text-body-l);
+    line-height: var(--leading-relaxed);
+    color: var(--ink-600);
+    margin: 0 0 28px;
+  }
+  .framework-intro p {
+    margin: 0 0 16px;
+  }
+  .framework-intro p:last-child {
+    margin-bottom: 0;
+  }
+  .simplification-note {
+    margin-top: 28px;
+    padding: 12px 20px;
+    background: var(--iris-50);
+    border-left: 3px solid var(--iris-300);
+    border-radius: var(--radius-sm);
+  }
+  .simplification-note p {
+    font-size: var(--text-caption);
+    line-height: var(--leading-relaxed);
+    color: var(--text-faint);
+    font-style: italic;
+    margin: 0;
+  }
+
+  .mechanism-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+  .show-more-btn {
+    display: block;
+    margin: 24px auto 0;
+    font-family: var(--font-mono);
+    font-size: var(--text-caption);
+    color: var(--coral-700);
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+  }
+  .show-more-btn:hover { text-decoration: underline; }
+
+  .about-section p {
+    font-size: var(--text-body-l);
+    line-height: var(--leading-relaxed);
+    color: var(--ink-700);
+    margin: 0 0 24px;
+  }
+  .about-section p a {
+    color: var(--coral-700);
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .about-section p a:hover { color: var(--coral-600); }
+  .coverage-note {
+    background: var(--coral-50);
+    border-left: 3px solid var(--coral-300);
+    border-radius: var(--radius-sm);
+    padding: 20px 24px;
+    margin: 0 0 24px;
+  }
+  .coverage-note p {
+    font-size: var(--text-body);
+    line-height: var(--leading-relaxed);
+    color: var(--ink-800);
+    margin: 0;
+  }
+  .coverage-note a {
+    color: var(--coral-700);
+    font-weight: 600;
+  }
+
+  .feedback-section {
+    border-top: 1px solid var(--border-soft);
+  }
+  .feedback {
+    font-size: var(--text-body);
+    color: var(--ink-600);
+  }
+  .feedback a { color: var(--coral-700); }
+  .disclaimer {
+    font-size: var(--text-body-s);
+    line-height: var(--leading-relaxed);
+    color: var(--text-faint);
+    margin: 16px 0 0;
+  }
+  .disclaimer + .disclaimer {
+    margin-top: 10px;
+  }
+
+  @media (max-width: 720px) {
+    .mechanism-grid { grid-template-columns: 1fr; }
+  }
+</style>

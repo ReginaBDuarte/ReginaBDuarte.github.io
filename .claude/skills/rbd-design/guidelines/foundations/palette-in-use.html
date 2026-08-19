@@ -1,0 +1,40 @@
+<!-- @dsCard group="Brand" viewport="700x180" name="Palette in use" subtitle="How the colors compose: ivory canvas, coral lead, iris support" -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<link rel="stylesheet" href="../../styles.css" />
+<style>
+  body { margin: 0; background: var(--bg-canvas); padding: 22px; font-family: var(--font-text); }
+  .scene { display: flex; gap: 14px; align-items: stretch; }
+  .panel { flex: 1; border-radius: 16px; padding: 18px; }
+  .coral { background: var(--coral-100); }
+  .iris { background: var(--iris-100); }
+  .paper { background: var(--paper); border: 1px solid var(--border-soft); box-shadow: var(--shadow-sm); }
+  .eyebrow { font-family: var(--font-mono); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--accent-text); }
+  .iris .eyebrow { color: var(--iris-700); }
+  h3 { font-family: var(--font-display); font-weight: 700; font-size: 19px; color: var(--ink-900); margin: 8px 0 4px; letter-spacing: -0.01em; }
+  p { font-size: 13.5px; color: var(--text-muted); margin: 0; line-height: 1.45; }
+  .chip { display:inline-block; margin-top:12px; font-size:12px; font-weight:600; padding:6px 12px; border-radius:999px; background:var(--coral-300); color:var(--ink-900); }
+</style>
+</head>
+<body>
+  <div class="scene">
+    <div class="panel coral">
+      <span class="eyebrow">— Finding</span>
+      <h3>Explanations calibrate reliance</h3>
+      <p>Coral leads. It carries the single most important idea on a surface.</p>
+    </div>
+    <div class="panel iris">
+      <span class="eyebrow">— Context</span>
+      <h3>Iris supports</h3>
+      <p>Soft purple groups secondary context and method without competing.</p>
+    </div>
+    <div class="panel paper">
+      <span class="eyebrow">— Read</span>
+      <h3>Paper holds copy</h3>
+      <p>White cards on the warm ivory canvas keep long text calm.<span class="chip">calibration</span></p>
+    </div>
+  </div>
+</body>
+</html>

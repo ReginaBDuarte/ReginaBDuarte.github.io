@@ -1,0 +1,291 @@
+---
+import FrameworkLayout from '../../../layouts/FrameworkLayout.astro';
+import FrameworkFigure from '../../../components/aidm/FrameworkFigure.astro';
+import ProseBlocks from '../../../components/aidm/ProseBlocks.astro';
+import AuthorQuotes from '../../../components/aidm/AuthorQuotes.astro';
+import {
+  studies,
+  parseManipulatedFactors,
+  getAiDesignSubfields,
+  getXaiSubfields,
+  getAdvisorSubfields,
+  getTeamSubfields,
+  isXaiTrivial,
+  isAdvisorsTrivial,
+  isTeamTrivial,
+  CODING_FIELD_TO_FACTOR,
+  type StudyCoding,
+} from '../../../lib/aidm';
+
+export function getStaticPaths() {
+  return studies.map((study) => ({ params: { id: study.id }, props: { study } }));
+}
+
+const { study } = Astro.props;
+
+// Personalize the figure to this study: each factor shows this study's own
+// coded value instead of the generic mechanism count. f-xai and f-ai-design aren't
+// 1:1 coding fields — both get short labelled lines instead, see below.
+const codingByFactor: Record<string, string> = {};
+for (const [field, factorId] of Object.entries(CODING_FIELD_TO_FACTOR)) {
+  codingByFactor[factorId] = study.coding[field as keyof StudyCoding];
+}
+
+// f-ai-design isn't a single value either — three independent coding dimensions on
+// one node, rendered as short labelled lines instead of the usual one-liner. See
+// getAiDesignSubfields and FrameworkFigure's aiDesignSubfields prop.
+const aiDesignSubfields = getAiDesignSubfields(study.coding, study.manipulated_factors);
+
+// f-xai, f-number-of-ai-advisors and f-team-composition get the same subfield
+// treatment, but only when there's something to break down — for the common trivial
+// case (no XAI used; a single advisor with no agreement dimension; a single
+// decision-maker) that's just noise, so those fall back to the plain one-line value
+// instead (already set above for advisors/team via CODING_FIELD_TO_FACTOR; set
+// directly here for xai, which isn't in that map).
+const xaiTrivial = isXaiTrivial(study.coding);
+if (xaiTrivial) {
+  codingByFactor['f-xai'] = study.coding.xai_present === 'No' ? 'Not present' : 'Not reported';
+}
+const xaiSubfields = xaiTrivial ? undefined : getXaiSubfields(study.coding, study.manipulated_factors);
+const advisorSubfields = isAdvisorsTrivial(study.coding)
+  ? undefined
+  : getAdvisorSubfields(study.coding, study.manipulated_factors);
+const teamSubfields = isTeamTrivial(study.coding)
+  ? undefined
+  : getTeamSubfields(study.coding, study.manipulated_factors);
+
+// Which specific categories were varied, per manipulated factor (e.g. f-expertise ->
+// ["Experts - junior", "Experts - senior"]) — rendered on the node itself now, not in a
+// separate list below the figure.
+const manipulatedCategoriesByFactor: Record<string, string[]> = {};
+for (const entry of parseManipulatedFactors(study.manipulated_factors)) {
+  if (!entry.factorId || !entry.category) continue;
+  (manipulatedCategoriesByFactor[entry.factorId] ??= []).push(entry.category);
+}
+
+const isUnresolvedAuthor = study.author === 'UNRESOLVED';
+---
+<FrameworkLayout
+  title={`${study.study} · AI-Assisted Decision-Making`}
+  description={`Coded study in the AI-Assisted Decision-Making evidence base: ${study.study}.`}
+  translated={false}
+>
+  <section class="header">
+    <div class="wrap">
+      <a class="back-link" href="/framework/">← Back to the framework</a>
+      <div class="title-row">
+        <h1>{study.study}</h1>
+        {(study.sample_size !== null || study.decision_task_type.length > 0) && (
+          <span class="task-type">
+            {study.sample_size !== null && (
+              <span class="task-type-chip">N = {study.sample_size}</span>
+            )}
+            {study.decision_task_type.map((t) => <span class="task-type-chip">{t}</span>)}
+          </span>
+        )}
+      </div>
+      <p class="byline">
+        {isUnresolvedAuthor ? 'Author not yet resolved in the source data' : study.author}
+        {' · '}{study.year}{' · '}{study.venue}
+      </p>
+      <div class="badges">
+        {study.link && (
+          <a class="tag tag-link" href={study.link} target="_blank" rel="noopener">Full Paper →</a>
+        )}
+        {study.own_work && <span class="tag own-work">Author's own work</span>}
+        {study.incomplete && <span class="tag incomplete">This record is incomplete</span>}
+      </div>
+    </div>
+  </section>
+
+  <section class="figure-section">
+    <div class="wrap">
+      <h2>This study in the framework</h2>
+      <FrameworkFigure
+        interactive={false}
+        codingByFactor={codingByFactor}
+        manipulatedCategoriesByFactor={manipulatedCategoriesByFactor}
+        aiAccuracyDetails={study.ai_accuracy_details}
+        aiDesignSubfields={aiDesignSubfields}
+        xaiSubfields={xaiSubfields}
+        advisorSubfields={advisorSubfields}
+        teamSubfields={teamSubfields}
+      />
+    </div>
+  </section>
+
+  {(study.research_questions || study.authors_framing || study.design_notes || study.summary_of_findings) && (
+    <section class="findings-section">
+      <div class="wrap">
+        {study.research_questions && (
+          <div class="finding-block">
+            <span class="finding-label">Research questions</span>
+            <ProseBlocks text={study.research_questions} />
+          </div>
+        )}
+        {study.authors_framing && (
+          <div class="finding-block">
+            <span class="finding-label">In the authors' words</span>
+            <AuthorQuotes text={study.authors_framing} />
+          </div>
+        )}
+        {study.design_notes && (
+          <details class="disclosure">
+            <summary>Experimental design</summary>
+            <div class="disclosure-body">
+              <ProseBlocks text={study.design_notes} />
+            </div>
+          </details>
+        )}
+        {study.summary_of_findings && (
+          <details class="disclosure">
+            <summary>Full findings</summary>
+            <div class="disclosure-body">
+              <ProseBlocks text={study.summary_of_findings} />
+            </div>
+          </details>
+        )}
+        {study.incomplete && !study.summary_of_findings && (
+          <p class="incomplete-note">
+            This record is missing its findings summary and authors' framing in the source
+            data. See experimental design above for what's known.
+          </p>
+        )}
+      </div>
+    </section>
+  )}
+
+  <section class="footer-links">
+    <div class="wrap">
+      <a class="back-link" href="/framework/">← Back to the framework</a>
+    </div>
+  </section>
+</FrameworkLayout>
+
+<style>
+  .header { padding-top: 48px; padding-bottom: 0; }
+  .back-link {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--coral-700);
+    text-decoration: none;
+    margin-bottom: 24px;
+  }
+  .back-link:hover { text-decoration: underline; }
+  .title-row {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 10px 14px;
+  }
+  .header h1 {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: var(--text-display-m);
+    letter-spacing: var(--tracking-tight);
+    color: var(--ink-900);
+    margin: 12px 0 0;
+    max-width: var(--maxw-prose);
+  }
+  .task-type {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .task-type-chip {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: var(--iris-100);
+    color: var(--iris-700);
+    white-space: nowrap;
+  }
+  .byline {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--text-faint);
+    margin: 14px 0 0;
+  }
+  .badges {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 16px;
+  }
+  .tag {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    padding: 3px 9px;
+    border-radius: 999px;
+    background: var(--ink-100);
+    color: var(--ink-700);
+  }
+  .tag.own-work { background: var(--iris-100); color: var(--iris-700); }
+  .tag.incomplete { background: var(--amber-500); color: #fff; }
+  .tag-link {
+    background: var(--coral-100);
+    color: var(--coral-700);
+    text-decoration: none;
+  }
+  .tag-link:hover { background: var(--coral-200); }
+
+  .figure-section {
+    padding: 24px 0 48px;
+  }
+  .findings-section, .footer-links {
+    padding: 48px 0;
+  }
+  h2 {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: var(--text-headline);
+    letter-spacing: var(--tracking-tight);
+    color: var(--ink-900);
+    margin: 0 0 20px;
+  }
+
+  .finding-block { margin-bottom: 28px; }
+  .finding-block:last-child { margin-bottom: 0; }
+  .finding-label {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--coral-700);
+    margin-bottom: 8px;
+  }
+  .disclosure {
+    margin-bottom: 16px;
+  }
+  .disclosure:last-child {
+    margin-bottom: 0;
+  }
+  .disclosure summary {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--coral-700);
+    cursor: pointer;
+  }
+  .disclosure-body {
+    margin-top: 10px;
+  }
+  .incomplete-note {
+    font-size: 14px;
+    color: var(--text-muted);
+    font-style: italic;
+  }
+
+  .footer-links {
+    border-top: 1px solid var(--border-soft);
+  }
+</style>

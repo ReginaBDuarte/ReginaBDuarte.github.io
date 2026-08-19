@@ -1,0 +1,82 @@
+---
+import { useTranslations, defaultLang, type Lang } from '../i18n/ui';
+
+const lang = (Astro.currentLocale ?? defaultLang) as Lang;
+const t = useTranslations(lang);
+
+const email = 'reginaduarte@tecnico.ulisboa.pt';
+const linkedin = 'https://www.linkedin.com/in/regina-duarte/';
+const scholar = 'https://scholar.google.com/citations?user=pL_DRrQAAAAJ&hl=pt-PT&oi=ao';
+const cvHref = '/CV_ReginaDuarte_2026.pdf';
+---
+<footer id="contact">
+  <div class="wrap">
+    <h2>{t.footer.heading}</h2>
+    <p>{t.footer.body}</p>
+    <div class="links">
+      <a href={`mailto:${email}`}>{email}</a>
+      <span class="dot">·</span>
+      <a href={linkedin} target="_blank" rel="noopener">LinkedIn</a>
+      <span class="dot">·</span>
+      <a href={scholar} target="_blank" rel="noopener">Google Scholar</a>
+      <span class="dot">·</span>
+      <a href={cvHref} target="_blank" rel="noopener">{t.footer.cvLabel}</a>
+    </div>
+    <div class="copy">
+      <span>© {new Date().getFullYear()} Regina de Brito Duarte</span>
+      <span>{t.footer.location}</span>
+    </div>
+  </div>
+</footer>
+
+<style>
+  footer {
+    background: var(--ink-900);
+    color: var(--ivory);
+    padding: 64px 0 40px;
+    margin-top: 40px;
+  }
+  footer h2 {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: var(--text-headline);
+    letter-spacing: var(--tracking-tight);
+    color: var(--ivory);
+    max-width: 620px;
+    margin: 0;
+  }
+  footer p {
+    font-size: var(--text-body-l);
+    line-height: var(--leading-relaxed);
+    color: #C9C2B8;
+    max-width: var(--maxw-prose);
+    margin: 16px 0 0;
+  }
+  .links {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-top: 32px;
+    font-size: 15px;
+  }
+  .links a {
+    color: var(--coral-300);
+    text-decoration: none;
+    font-weight: 500;
+  }
+  .links a:hover { color: var(--coral-200); }
+  .links .dot { color: #6B635B; }
+  .copy {
+    margin-top: 48px;
+    padding-top: 24px;
+    border-top: 1px solid #463F39;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: #6B635B;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+</style>

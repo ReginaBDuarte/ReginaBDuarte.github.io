@@ -1,0 +1,175 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import FrameworkCard from '../../components/FrameworkCard.astro';
+import Placeholder from '../../components/Placeholder.astro';
+import { getCollection, type CollectionEntry } from 'astro:content';
+import { useTranslations, defaultLang, type Lang } from '../../i18n/ui';
+
+const lang = (Astro.currentLocale ?? defaultLang) as Lang;
+const t = useTranslations(lang);
+
+const allResearch = await getCollection('research');
+
+// The full list is grouped by year, reverse chronological — except entries
+// sharing a `seriesLabel` (e.g. a preprint and its later journal version),
+// which are clustered together under that label instead of being split
+// apart by year. Each cluster/year-group is placed by its most recent year
+// so the overall list still reads newest-first.
+type Block = { label: string; repYear: number; entries: CollectionEntry<'research'>[]; isSeries: boolean };
+
+const seriesEntries = allResearch.filter((e) => e.data.seriesLabel);
+const soloEntries = allResearch.filter((e) => !e.data.seriesLabel);
+
+const blocks: Block[] = [];
+
+const byYear = new Map<number, CollectionEntry<'research'>[]>();
+for (const entry of soloEntries) {
+  const group = byYear.get(entry.data.year) ?? [];
+  group.push(entry);
+  byYear.set(entry.data.year, group);
+}
+for (const [year, entries] of byYear) {
+  blocks.push({ label: String(year), repYear: year, entries, isSeries: false });
+}
+
+const bySeries = new Map<string, CollectionEntry<'research'>[]>();
+for (const entry of seriesEntries) {
+  const label = entry.data.seriesLabel!;
+  const group = bySeries.get(label) ?? [];
+  group.push(entry);
+  bySeries.set(label, group);
+}
+for (const [label, entries] of bySeries) {
+  const sorted = entries.sort((a, b) => b.data.year - a.data.year);
+  blocks.push({ label, repYear: sorted[0].data.year, entries: sorted, isSeries: true });
+}
+
+blocks.sort((a, b) => b.repYear - a.repYear);
+---
+<Layout title={t.meta.researchTitle} description={t.meta.researchDescription}>
+  <section class="header">
+    <div class="wrap">
+      <h1>{t.researchPage.heading}</h1>
+      <p class="framing">{t.researchPage.framing}</p>
+    </div>
+  </section>
+
+  <section class="framework-repeat">
+    <div class="wrap">
+      <FrameworkCard />
+    </div>
+  </section>
+
+  <section class="full-list">
+    <div class="wrap">
+      <h2>{t.researchPage.allPublications}</h2>
+      {blocks.map((block) => (
+        <div class="year-group">
+          <span class="year-label">{block.isSeries ? block.label : block.label}</span>
+          <ul>
+            {block.entries.map((entry) => (
+              <li>
+                <span class="authors">
+                  <Placeholder value={entry.data.authors} />
+                  {block.isSeries && <span class="inline-year"> · {entry.data.year}</span>}
+                </span>
+                <span class="title">{entry.data.title}</span>
+                <span class="venue"><Placeholder value={entry.data.venue} /></span>
+                <span class="links">
+                  {entry.data.links.pdf && <a href={entry.data.links.pdf} target="_blank" rel="noopener">{t.researchPage.pdf}</a>}
+                  {entry.data.links.doi && <a href={entry.data.links.doi} target="_blank" rel="noopener">{t.researchPage.doi}</a>}
+                  {entry.data.links.code && <a href={entry.data.links.code} target="_blank" rel="noopener">{t.researchPage.code}</a>}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .header h1 {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: var(--text-display-m);
+    letter-spacing: var(--tracking-tight);
+    color: var(--ink-900);
+    margin: 0;
+  }
+  .header .framing {
+    font-size: var(--text-body-l);
+    line-height: var(--leading-relaxed);
+    color: var(--ink-600);
+    max-width: var(--maxw-prose);
+    margin: 20px 0 0;
+  }
+
+  .full-list h2 {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: var(--text-headline);
+    letter-spacing: var(--tracking-tight);
+    color: var(--ink-900);
+    margin: 0 0 24px;
+  }
+
+  .year-group { margin-bottom: 36px; }
+  .year-label {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: var(--text-caption);
+    font-weight: 600;
+    letter-spacing: var(--tracking-wide);
+    color: var(--text-faint);
+    margin-bottom: 12px;
+  }
+  .year-group ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .year-group li {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    gap: 16px;
+    align-items: baseline;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--border-soft);
+    font-size: var(--text-body);
+  }
+  .year-group .authors {
+    grid-column: 1 / -1;
+    font-size: var(--text-caption);
+    color: var(--text-faint);
+  }
+  .year-group .inline-year {
+    color: var(--coral-700);
+    font-weight: 600;
+  }
+  .year-group .title {
+    grid-column: 1 / 2;
+    color: var(--ink-900);
+    font-weight: 600;
+  }
+  .year-group .venue {
+    color: var(--text-muted);
+    font-size: var(--text-body-s);
+  }
+  .year-group .links {
+    display: flex;
+    gap: 10px;
+  }
+  .year-group .links a {
+    font-family: var(--font-mono);
+    font-size: var(--text-caption);
+    color: var(--coral-700);
+    text-decoration: none;
+  }
+  .year-group .links a:hover { text-decoration: underline; }
+
+  @media (max-width: 640px) {
+    .year-group li { grid-template-columns: 1fr; gap: 6px; }
+  }
+</style>

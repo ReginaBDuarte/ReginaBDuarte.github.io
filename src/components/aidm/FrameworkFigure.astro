@@ -1,0 +1,431 @@
+---
+// The three-column figure — Human · Task · AI Ecosystem — that's the hero of
+// the framework page. Reused in two modes:
+//  - interactive (Level 1): nodes are buttons that open the factor modal,
+//    showing each factor's mechanism count.
+//  - compact + personalized (Study pages): plain nodes, showing that one
+//    study's own coded value for each factor instead of the generic
+//    mechanism count — the study page is about this study, not a
+//    restatement of the framework. A manipulated factor shows the
+//    "Manipulated" flag right next to its name, and the specific categories
+//    manipulated (e.g. "Experts - junior · Experts - senior") underneath —
+//    this used to be a separate list below the whole figure on study pages;
+//    now it's on the node it actually describes.
+import { components, getFactorsByComponent, type AiDesignSubfield } from '../../lib/aidm';
+
+interface Props {
+  interactive?: boolean;
+  codingByFactor?: Record<string, string>;
+  manipulatedCategoriesByFactor?: Record<string, string[]>;
+  // Study-page-only aside: f-ai-performance gets a "Details" popover reading
+  // the study's free-text "AI accuracy details" column, since the coded
+  // value alone ("Manipulated", or a bucket like "95%-100%") is too coarse
+  // to be useful on its own.
+  aiAccuracyDetails?: string;
+  // Study-page-only: f-ai-design shows three short labelled lines (protocol, AI
+  // stance, interactivity) instead of one value — see getAiDesignSubfields in lib/aidm.
+  aiDesignSubfields?: AiDesignSubfield[];
+  // Study-page-only: f-xai shows three short labelled lines (presence, type, quality)
+  // instead of one merged value — see getXaiSubfields in lib/aidm. Same shape as
+  // aiDesignSubfields, reuses its type.
+  xaiSubfields?: AiDesignSubfield[];
+  // Study-page-only: f-number-of-ai-advisors shows two short labelled lines (count,
+  // agreement) instead of one value — see getAdvisorSubfields in lib/aidm. study/
+  // [id].astro only passes this for the few studies where it's non-trivial (isAdvisorsTrivial);
+  // the common single-advisor case uses the plain one-line value instead.
+  advisorSubfields?: AiDesignSubfield[];
+  // Study-page-only: f-team-composition shows three short labelled lines (composition,
+  // size, mode) instead of one value — see getTeamSubfields in lib/aidm. study/[id].astro
+  // only passes this for the few studies where it's non-trivial (isTeamTrivial); the
+  // common single-decision-maker case uses the plain one-line value instead.
+  teamSubfields?: AiDesignSubfield[];
+}
+const {
+  interactive = true,
+  codingByFactor,
+  manipulatedCategoriesByFactor,
+  aiAccuracyDetails,
+  aiDesignSubfields,
+  xaiSubfields,
+  advisorSubfields,
+  teamSubfields,
+} = Astro.props;
+---
+<div class:list={['figure', { compact: !interactive }]}>
+  {components.map((component) => (
+    <div class:list={['column', { lever: component.type.startsWith('Lever') }]}>
+      <div class="column-head">
+        <span class="component-label">{component.label}</span>
+        <span class="component-type">{component.type.startsWith('Lever') ? 'Designable' : 'Inherited'}</span>
+      </div>
+      <div class="nodes">
+        {getFactorsByComponent(component.label).map((factor) => {
+          const isAiDesign = factor.id === 'f-ai-design' && Boolean(aiDesignSubfields);
+          const isXai = factor.id === 'f-xai' && Boolean(xaiSubfields);
+          const isAdvisors = factor.id === 'f-number-of-ai-advisors' && Boolean(advisorSubfields);
+          const isTeam = factor.id === 'f-team-composition' && Boolean(teamSubfields);
+          const codedValue = codingByFactor?.[factor.id];
+          const manipulated = isAiDesign
+            ? aiDesignSubfields!.some((f) => f.manipulated)
+            : isXai
+            ? xaiSubfields!.some((f) => f.manipulated)
+            : isAdvisors
+            ? advisorSubfields!.some((f) => f.manipulated)
+            : isTeam
+            ? teamSubfields!.some((f) => f.manipulated)
+            : codedValue === 'Manipulated';
+          const unreported = codedValue === 'Not reported' || codedValue === 'Not measured';
+          // With per-study coding, the manipulated factors ARE the highlight —
+          // everything else dims, so the varied dimension stands out. On the
+          // Level 1 page (no codingByFactor) nothing is highlighted or dimmed.
+          const isHighlighted = Boolean(codingByFactor) && manipulated;
+          const isDim = Boolean(codingByFactor) && !manipulated;
+          const categories = manipulatedCategoriesByFactor?.[factor.id];
+          const showAiDetails = factor.id === 'f-ai-performance' && Boolean(aiAccuracyDetails);
+          const Tag = interactive ? 'button' : 'div';
+          return (
+            <Tag
+              class:list={['node', { highlighted: isHighlighted, dim: isDim }]}
+              type={interactive ? 'button' : undefined}
+              data-factor-id={interactive ? factor.id : undefined}
+              aria-haspopup={interactive ? 'dialog' : undefined}
+            >
+              {showAiDetails && (
+                <>
+                  <button type="button" class="ai-details-btn" data-ai-details-toggle aria-expanded="false">
+                    Details
+                  </button>
+                  <div class="ai-details-balloon" hidden>
+                    <button type="button" class="ai-details-close" data-ai-details-close aria-label="Close">✕</button>
+                    <p>{aiAccuracyDetails}</p>
+                  </div>
+                </>
+              )}
+              <div class="node-content">
+                <span class="node-top">
+                  <span class="node-name">{factor.factor}</span>
+                  {manipulated && <span class="manipulated-flag">Manipulated</span>}
+                </span>
+                {isAiDesign ? (
+                  <div class="subfields">
+                    {aiDesignSubfields!.map((f) => (
+                      <div class="subfield-row">
+                        <span class="subfield-label">{f.label}</span>
+                        <span class:list={['subfield-value', { unreported: f.value === 'Not reported' || f.value === 'Not measured' }]}>
+                          {f.value}
+                          {f.manipulated && f.categories.length > 0 && ` (${f.categories.join(', ')})`}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                ) : isXai ? (
+                  <div class="subfields">
+                    {xaiSubfields!.map((f) => (
+                      <div class="subfield-row">
+                        <span class="subfield-label">{f.label}</span>
+                        <span class:list={['subfield-value', { unreported: f.value === 'Not reported' || f.value === 'Not measured' }]}>
+                          {f.value}
+                          {f.manipulated && f.categories.length > 0 && ` (${f.categories.join(', ')})`}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                ) : isAdvisors ? (
+                  <div class="subfields">
+                    {advisorSubfields!.map((f) => (
+                      <div class="subfield-row">
+                        <span class="subfield-label">{f.label}</span>
+                        <span class:list={['subfield-value', { unreported: f.value === 'Not reported' || f.value === 'Not measured' }]}>
+                          {f.value}
+                          {f.manipulated && f.categories.length > 0 && ` (${f.categories.join(', ')})`}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                ) : isTeam ? (
+                  <div class="subfields">
+                    {teamSubfields!.map((f) => (
+                      <div class="subfield-row">
+                        <span class="subfield-label">{f.label}</span>
+                        <span class:list={['subfield-value', { unreported: f.value === 'Not reported' || f.value === 'Not measured' }]}>
+                          {f.value}
+                          {f.manipulated && f.categories.length > 0 && ` (${f.categories.join(', ')})`}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                ) : manipulated ? (
+                  categories && categories.length > 0 && (
+                    <div class="manipulated-categories">
+                      {categories.map((c) => <span class="category-chip">{c}</span>)}
+                    </div>
+                  )
+                ) : codedValue ? (
+                  <span class:list={['node-value', { unreported }]}>{codedValue}</span>
+                ) : (
+                  <span class="node-meta">
+                    <span class="mech-count">{factor.mechanisms.length} mechanism{factor.mechanisms.length === 1 ? '' : 's'}</span>
+                  </span>
+                )}
+              </div>
+            </Tag>
+          );
+        })}
+      </div>
+    </div>
+  ))}
+</div>
+
+<style>
+  .figure {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    align-items: start;
+  }
+  .column {
+    background: var(--paper);
+    border: 1px solid var(--border-soft);
+    border-radius: var(--radius-lg);
+    padding: 20px;
+  }
+  .column.lever {
+    background: var(--iris-100);
+    border-color: var(--iris-200);
+  }
+  .column-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+  .component-label {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 17px;
+    color: var(--ink-900);
+  }
+  .lever .component-label { color: var(--iris-700); }
+  .component-type {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+  }
+  .lever .component-type { color: var(--iris-700); }
+
+  .nodes {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .node {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    text-align: left;
+    background: var(--cream);
+    border: 1px solid var(--border-soft);
+    border-radius: var(--radius-md);
+    padding: 10px 12px;
+    font-family: inherit;
+    cursor: default;
+  }
+  button.node {
+    cursor: pointer;
+    transition: transform var(--dur-fast) var(--ease-out), box-shadow var(--dur) var(--ease-out);
+  }
+  button.node:hover,
+  button.node:focus-visible {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-sm);
+    outline: 2px solid var(--coral-400);
+    outline-offset: 1px;
+  }
+  .lever .node {
+    background: var(--paper);
+    border-color: var(--iris-200);
+  }
+  .node-top {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .node-name {
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--ink-900);
+  }
+  .lever .node-name { color: var(--ink-900); }
+  .manipulated-flag {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--coral-700);
+    background: var(--coral-100);
+    border-radius: var(--radius-pill);
+    padding: 1px 8px;
+  }
+  .lever .manipulated-flag { color: var(--iris-700); background: var(--iris-100); }
+  .manipulated-categories {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+  }
+  .category-chip {
+    font-size: 12px;
+    font-weight: 600;
+    padding: 3px 9px;
+    border-radius: 999px;
+    background: var(--coral-100);
+    color: var(--coral-700);
+  }
+  .lever .category-chip { background: var(--iris-100); color: var(--iris-700); }
+  .node-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .mech-count {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-faint);
+  }
+
+  .node-value {
+    font-size: 13px;
+    color: var(--ink-700);
+  }
+  .node-value.unreported {
+    color: var(--text-faint);
+    font-style: italic;
+  }
+
+  .subfields {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .subfield-row {
+    display: flex;
+    align-items: baseline;
+    gap: 5px;
+    font-size: 11px;
+    line-height: 1.4;
+  }
+  .subfield-label {
+    flex-shrink: 0;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.01em;
+    color: var(--text-faint);
+  }
+  .subfield-value {
+    color: var(--ink-700);
+  }
+  .subfield-value.unreported {
+    color: var(--text-faint);
+    font-style: italic;
+  }
+
+  .ai-details-btn {
+    position: absolute;
+    top: -9px;
+    right: 10px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    color: var(--iris-700);
+    background: var(--paper);
+    border: 1px solid var(--iris-300);
+    border-radius: var(--radius-pill);
+    padding: 2px 8px;
+    cursor: pointer;
+    z-index: 2;
+  }
+  .ai-details-btn:hover { background: var(--iris-100); }
+  .ai-details-balloon {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 8px;
+    width: 280px;
+    max-width: 80vw;
+    background: var(--paper);
+    border: 1px solid var(--iris-200);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-md);
+    padding: 12px 14px;
+    z-index: 3;
+  }
+  .ai-details-balloon p {
+    margin: 0;
+    padding-right: 18px;
+    font-size: 12.5px;
+    line-height: 1.55;
+    color: var(--ink-700);
+  }
+  .ai-details-close {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    border: none;
+    border-radius: 999px;
+    background: var(--iris-100);
+    color: var(--iris-700);
+    font-size: 11px;
+    line-height: 1;
+    cursor: pointer;
+  }
+  .ai-details-close:hover { background: var(--iris-200); }
+
+  .node.highlighted {
+    border-color: var(--coral-500);
+    box-shadow: 0 0 0 2px var(--coral-300);
+  }
+  .lever .node.highlighted {
+    border-color: var(--iris-500);
+    box-shadow: 0 0 0 2px var(--iris-300);
+  }
+  /* Dimming targets .node-content, not the node itself, so the AI-details
+     popover (a sibling, not a descendant of .node-content) stays fully
+     opaque and readable even on a dimmed node. */
+  .node.dim .node-content { opacity: 0.45; }
+
+  .figure.compact .column { padding: 14px; }
+  .figure.compact .node { padding: 8px 10px; }
+
+  @media (max-width: 860px) {
+    .figure { grid-template-columns: 1fr; }
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>('[data-ai-details-toggle]').forEach((btn) => {
+    const balloon = btn.nextElementSibling as HTMLElement | null;
+    if (!balloon) return;
+    const close = () => {
+      balloon.hidden = true;
+      btn.setAttribute('aria-expanded', 'false');
+    };
+    btn.addEventListener('click', () => {
+      const open = !balloon.hidden;
+      balloon.hidden = open;
+      btn.setAttribute('aria-expanded', String(!open));
+    });
+    balloon.querySelector('[data-ai-details-close]')?.addEventListener('click', close);
+  });
+</script>

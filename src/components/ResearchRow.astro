@@ -1,0 +1,89 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import Placeholder from './Placeholder.astro';
+
+interface Props {
+  entry: CollectionEntry<'research'>;
+}
+
+const { entry } = Astro.props;
+const { title, venue, year, soWhat, links } = entry.data;
+const href = links.doi ?? links.pdf ?? links.code;
+---
+<article class="row">
+  <span class="year">{year}</span>
+  <div class="body">
+    <h3>
+      {href ? (
+        <a href={href} target="_blank" rel="noopener">
+          {title} <span class="external">↗</span>
+        </a>
+      ) : (
+        title
+      )}
+    </h3>
+    {soWhat && <p class="so-what"><Placeholder value={soWhat} /></p>}
+  </div>
+  <span class="venue"><Placeholder value={venue} /></span>
+</article>
+
+<style>
+  .row {
+    display: grid;
+    grid-template-columns: 64px 1fr auto;
+    gap: 24px;
+    align-items: start;
+    padding: 24px 0;
+    border-bottom: 1px solid var(--border-soft);
+  }
+  .row:first-of-type { border-top: 1px solid var(--border-soft); }
+  .year {
+    font-family: var(--font-mono);
+    font-size: var(--text-caption);
+    color: var(--text-faint);
+    padding-top: 3px;
+  }
+  .body h3 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: var(--text-title);
+    line-height: var(--leading-tight);
+    color: var(--ink-900);
+    margin: 0;
+  }
+  .body h3 a {
+    color: var(--ink-900);
+    text-decoration: none;
+  }
+  .body h3 a:hover {
+    color: var(--coral-600);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .body h3 .external {
+    font-size: 0.7em;
+    color: var(--coral-600);
+  }
+  .body .so-what {
+    font-size: var(--text-body);
+    line-height: var(--leading-normal);
+    color: var(--text-muted);
+    margin: 10px 0 0;
+  }
+  .venue {
+    font-family: var(--font-mono);
+    font-size: var(--text-caption);
+    color: var(--text-faint);
+    text-align: right;
+    white-space: nowrap;
+    padding-top: 3px;
+  }
+
+  @media (max-width: 640px) {
+    .row {
+      grid-template-columns: 1fr;
+      gap: 8px;
+    }
+    .venue { text-align: left; }
+  }
+</style>

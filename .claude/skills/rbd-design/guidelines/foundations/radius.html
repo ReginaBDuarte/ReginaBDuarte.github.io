@@ -1,0 +1,26 @@
+<!-- @dsCard group="Spacing" viewport="700x150" name="Radius" subtitle="Rounded, friendly · cards at 16px" -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<link rel="stylesheet" href="../../styles.css" />
+<style>
+  body { margin: 0; background: var(--bg-canvas); padding: 22px; }
+  .row { display: flex; gap: 18px; align-items: flex-end; }
+  .col { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  .box { width: 72px; height: 56px; background: var(--iris-200); box-shadow: inset 0 0 0 1px var(--iris-300); }
+  .tok { font-family: var(--font-mono); font-size: 10px; color: var(--text-faint); }
+  .pill { width: 96px; border-radius: 999px; }
+</style>
+</head>
+<body>
+  <div class="row">
+    <div class="col"><div class="box" style="border-radius:6px"></div><span class="tok">xs · 6</span></div>
+    <div class="col"><div class="box" style="border-radius:8px"></div><span class="tok">sm · 8</span></div>
+    <div class="col"><div class="box" style="border-radius:12px"></div><span class="tok">md · 12</span></div>
+    <div class="col"><div class="box" style="border-radius:16px"></div><span class="tok">lg · 16 ◆</span></div>
+    <div class="col"><div class="box" style="border-radius:22px"></div><span class="tok">xl · 22</span></div>
+    <div class="col"><div class="box pill"></div><span class="tok">pill · 999</span></div>
+  </div>
+</body>
+</html>

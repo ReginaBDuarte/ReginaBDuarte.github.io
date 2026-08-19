@@ -1,0 +1,37 @@
+---
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import '../styles/global.css';
+import { getCanonicalPath, localizePath, languages, defaultLang, type Lang } from '../i18n/ui';
+
+interface Props {
+  title: string;
+  description: string;
+}
+
+const { title, description } = Astro.props;
+const lang = (Astro.currentLocale ?? defaultLang) as Lang;
+const canonical = getCanonicalPath(Astro.url.pathname);
+---
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="canonical" href={new URL(Astro.url.pathname, Astro.site)} />
+    {(Object.keys(languages) as Lang[]).map((code) => (
+      <link rel="alternate" hreflang={code} href={new URL(localizePath(canonical, code), Astro.site)} />
+    ))}
+    <link rel="alternate" hreflang="x-default" href={new URL(localizePath(canonical, defaultLang), Astro.site)} />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+  </head>
+  <body>
+    <Header />
+    <main>
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>
