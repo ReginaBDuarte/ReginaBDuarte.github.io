@@ -75,6 +75,7 @@ blocks.sort((a, b) => b.repYear - a.repYear);
           <ul>
             {block.entries.map((entry) => (
               <li>
+                <span class="title">{entry.data.title}</span>
                 <span class="authors">
                   {isPlaceholder(entry.data.authors) ? (
                     <Placeholder value={entry.data.authors} />
@@ -88,7 +89,6 @@ blocks.sort((a, b) => b.repYear - a.repYear);
                   )}
                   {block.isSeries && <span class="inline-year"> · {entry.data.year}</span>}
                 </span>
-                <span class="title">{entry.data.title}</span>
                 <span class="venue"><Placeholder value={entry.data.venue} /></span>
                 <span class="links">
                   {entry.data.links.pdf && <a href={entry.data.links.pdf} target="_blank" rel="noopener">{t.researchPage.pdf}</a>}
