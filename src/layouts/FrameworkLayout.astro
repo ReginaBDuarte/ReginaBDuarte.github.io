@@ -41,6 +41,11 @@ const canonical = getCanonicalPath(Astro.url.pathname);
     )}
     <title>{title}</title>
     <meta name="description" content={description} />
+    <!-- Regina's explicit call: track the framework pages too, despite this layout
+         otherwise being kept independent of the main site (see the Portability note
+         in CLAUDE.md). Drop this script tag if the framework ever moves to another
+         server/owner. -->
+    <script defer src="https://cloud.umami.is/script.js" data-website-id="117b314f-151f-4f70-a36a-539997aa5f7e"></script>
   </head>
   <body>
     <main>
