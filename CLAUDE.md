@@ -540,13 +540,21 @@ proposal deck the framework is drawn from) — reference material, not build inp
   since the original 2026-08-05 export and are worth re-checking with
   `node -e "const d=require('./src/data/aidm-framework.json'); console.log(d.factors.length,
   d.mechanisms.length, d.studies.length)"` rather than trusting a number written here** — as
-  of 2026-08-19 it's **10 factors, 23 mechanisms, 56 coded studies** (up from the original 9 /
+  of 2026-08-20 it's **10 factors, 22 mechanisms, 56 coded studies** (up from the original 9 /
   12 / 35; see `src/lib/aidm.ts`'s comments for what changed: `f-need-for-cognition` was
   removed as a factor, `f-task-uncertainty` was split out of `f-difficulty`, and
-  `f-number-of-ai-advisors` was added, alongside 5 new mechanisms and 4 new coding fields —
-  `advice_stance`, `advisor_agreement`, `number_of_advisors`, `interaction_modality`). All
-  relationships pre-resolved. **To update the framework's content: re-export from Notion and
-  replace this file wholesale — don't hand-edit individual records.**
+  `f-number-of-ai-advisors` was added, alongside 4 new coding fields — `advice_stance`,
+  `advisor_agreement`, `number_of_advisors`, `interaction_modality`). All relationships
+  pre-resolved. **To update the framework's content: re-export from Notion
+  (`python AIAssistedDM/notionRetrieve.py`, `NOTION_TOKEN` lives in the repo's `.env`) and
+  replace this file wholesale — don't hand-edit individual records.** **2026-08-20 re-sync**:
+  Regina edited the Mechanisms database in Notion — `m-team-composition` and
+  `m-reliance-multidimensional` were removed, and a new mechanism under `f-team-composition`
+  was added (slugged `m-group-decision-mode-2`, since its sub-factor text collided with the
+  existing `m-group-decision-mode`). Mechanism count went 23 → 22 net. `--check` ran clean
+  first (no dangling or asymmetric relations), then the real sync wrote the file;
+  `src/content/framework/{en,pt}.md`'s `updated` field was bumped to `2026-08-20` to match.
+  `npm run build` still produces 65 pages with no errors after the re-sync.
 - `src/lib/aidm.ts` — typed data access: `factors`, `mechanisms`, `studies` arrays plus
   helpers (`getFactorsByComponent`, `getMechanismsBySupport`, `getMechanismsForFactor`,
   `parseManipulatedFactors` for the `"XAI: Feature importance"`-style prefix strings,

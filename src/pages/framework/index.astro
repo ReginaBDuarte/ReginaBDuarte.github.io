@@ -50,7 +50,7 @@ const mechanismsBySupport = getMechanismsBySupport();
         <span class="dot">·</span>
         <button id="cite-toggle" type="button" class="cite-cta">{t.frameworkPage.citeThis}</button>
       </div>
-      <pre id="citation" class="citation" hidden>{t.frameworkPage.citation(name, version, updated)}</pre>
+      <pre id="citation" class="citation" hidden>{t.frameworkPage.citation(t.frameworkPage.citationAuthor, name, updated, version)}</pre>
 
       {lang !== defaultLang && (
         <p class="data-note">{t.frameworkPage.dataNote}</p>
@@ -145,6 +145,14 @@ const mechanismsBySupport = getMechanismsBySupport();
   const dialogs = Array.from(document.querySelectorAll<HTMLDialogElement>('dialog.factor-modal'));
   const byId = new Map(dialogs.map((d) => [d.id.replace('modal-', ''), d]));
   let lastFocused: Element | null = null;
+  // dialog.close() queues its "close" event as a task rather than firing it
+  // synchronously, so it runs *after* the click handler that called close().
+  // The "jump to mechanism" handler below deliberately moves focus to the
+  // revealed mechanism card; without this flag the close handler's own
+  // focus-restoration (below) would run afterwards and steal focus (and the
+  // scroll position that comes with it) back to the button that opened the
+  // modal, silently undoing the jump.
+  let suppressReturnFocus = false;
 
   function openFactor(id: string, pushHistory = true) {
     const dlg = byId.get(id);
@@ -164,7 +172,11 @@ const mechanismsBySupport = getMechanismsBySupport();
         history.pushState({}, '', location.pathname + location.search);
       }
       if (!dialogs.some((d) => d.open)) document.body.style.overflow = '';
-      if (lastFocused instanceof HTMLElement) lastFocused.focus();
+      if (suppressReturnFocus) {
+        suppressReturnFocus = false;
+      } else if (lastFocused instanceof HTMLElement) {
+        lastFocused.focus();
+      }
     });
   });
 
@@ -208,6 +220,7 @@ const mechanismsBySupport = getMechanismsBySupport();
     btn.addEventListener('click', () => {
       const id = btn.getAttribute('data-jump-mechanism');
       if (!id) return;
+      suppressReturnFocus = true;
       (btn.closest('dialog') as HTMLDialogElement | null)?.close();
 
       const card = document.getElementById(`mechanism-${id}`);

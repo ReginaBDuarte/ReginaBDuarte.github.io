@@ -56,14 +56,15 @@ const en = {
     framing:
       "My research asks how people rely on AI in decision-making settings: when they over-rely, when they override, and when they follow AI suggestions appropriately, and what interventions should be used to improve collaboration and decision performance. I've run studies across several settings: clinical assessment, misinformation detection, and group decision-making. Alongside those studies, I've built a framework for AI-assisted decision-making that pulls the field's findings into one structure, for researchers and practitioners who need to design or evaluate these systems, and for a general audience looking to improve their AI literacy and understanding of AI's impact.",
     allPublications: 'All publications',
-    pdf: 'PDF',
+    pdf: 'Link',
     doi: 'DOI',
     code: 'Code',
   },
   frameworkPage: {
     citeThis: 'Cite this →',
-    citation: (name: string, version: string, updated: string) =>
-      `${name} (Version ${version}). ${updated}. Working draft.`,
+    citationAuthor: 'Regina de Brito Duarte',
+    citation: (author: string, name: string, updated: string, version: string) =>
+      `${author}. ${name}. ${updated}. Version ${version}.`,
     feedbackPrefix: "Spot something off, or have a correction? I'd genuinely like to hear it: ",
     maintainedByPrefix: 'This framework is maintained by ',
     dataNote:
@@ -134,7 +135,7 @@ const en = {
     researchTitle: 'Research · Regina de Brito Duarte',
     researchDescription:
       'Publications on human-AI decision-making, reliance, and evidence for institutional AI adoption.',
-    frameworkTitle: 'Framework · Regina de Brito Duarte',
+    frameworkTitle: 'Regina de Brito Duarte · AI-Assisted Decision-Making Framework',
     frameworkDescription:
       'A working-draft framework for human-AI decision-making: when to trust the machine, and when the design should make it easier to say no.',
     aboutTitle: 'About · Regina de Brito Duarte',
@@ -193,14 +194,15 @@ const pt: typeof en = {
     framing:
       'A minha investigação pergunta como as pessoas confiam na IA em contextos de tomada de decisão: quando confiam demasiado, quando contrariam as sugestões da IA e quando as seguem de forma apropriada, e que intervenções deviam ser usadas para melhorar a colaboração e o resultado da decisão. Já conduzi estudos em vários contextos: avaliação clínica, deteção de desinformação e tomada de decisão em grupo. A par desses estudos, construí uma framework conceptual para a tomada de decisão assistida por IA que reúne as conclusões da área numa única estrutura, para investigadores e profissionais que precisam de conceber ou avaliar estes sistemas, e para um público mais geral que queira melhorar a sua literacia em IA e a compreensão do seu impacto.',
     allPublications: 'Todas as publicações',
-    pdf: 'PDF',
+    pdf: 'Link',
     doi: 'DOI',
     code: 'Código',
   },
   frameworkPage: {
     citeThis: 'Citar →',
-    citation: (name: string, version: string, updated: string) =>
-      `${name} (Versão ${version}). ${updated}. Rascunho em curso.`,
+    citationAuthor: 'Regina de Brito Duarte',
+    citation: (author: string, name: string, updated: string, version: string) =>
+      `${author}. ${name}. ${updated}. Versão ${version}.`,
     feedbackPrefix: 'Reparou nalgum erro ou tem uma correção? Gostava mesmo de saber: ',
     maintainedByPrefix: 'Esta framework é mantida por ',
     dataNote:
@@ -271,7 +273,7 @@ const pt: typeof en = {
     researchTitle: 'Investigação · Regina de Brito Duarte',
     researchDescription:
       'Publicações sobre tomada de decisão humano-IA, confiança e evidência para a adoção institucional de IA.',
-    frameworkTitle: 'Framework · Regina de Brito Duarte',
+    frameworkTitle: 'Regina de Brito Duarte · AI-Assisted Decision-Making Framework',
     frameworkDescription:
       'Uma framework em rascunho para a tomada de decisão humano-IA: quando confiar na máquina, e quando o design deve tornar mais fácil dizer que não.',
     aboutTitle: 'Sobre · Regina de Brito Duarte',
