@@ -11,7 +11,7 @@
 //    manipulated (e.g. "Experts - junior · Experts - senior") underneath —
 //    this used to be a separate list below the whole figure on study pages;
 //    now it's on the node it actually describes.
-import { components, getFactorsByComponent, type AiDesignSubfield } from '../../lib/aidm';
+import { components, getFactorsByComponent, stripEmDash, type AiDesignSubfield } from '../../lib/aidm';
 
 interface Props {
   interactive?: boolean;
@@ -97,7 +97,7 @@ const {
                   </button>
                   <div class="ai-details-balloon" hidden>
                     <button type="button" class="ai-details-close" data-ai-details-close aria-label="Close">✕</button>
-                    <p>{aiAccuracyDetails}</p>
+                    <p>{aiAccuracyDetails && stripEmDash(aiAccuracyDetails)}</p>
                   </div>
                 </>
               )}

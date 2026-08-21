@@ -1,6 +1,7 @@
 ---
 import type { Mechanism } from '../../lib/aidm';
-import { getFactor } from '../../lib/aidm';
+import { getFactor, stripEmDash } from '../../lib/aidm';
+import ProseBlocks from './ProseBlocks.astro';
 
 interface Props {
   mechanism: Mechanism;
@@ -10,7 +11,7 @@ const { mechanism, hidden = false } = Astro.props;
 const factor = getFactor(mechanism.factor)!;
 ---
 <article class="mechanism-card" id={`mechanism-${mechanism.id}`} tabindex="-1" hidden={hidden}>
-  <h3>{mechanism.claim}</h3>
+  <h3>{stripEmDash(mechanism.claim)}</h3>
   <div class="meta-row">
     <span class="evidence-count">
       {mechanism.n_support} supporting{mechanism.n_contradict > 0 ? ` · ${mechanism.n_contradict} contradicting` : ''}
@@ -23,7 +24,9 @@ const factor = getFactor(mechanism.factor)!;
   </div>
   <details class="details">
     <summary>Details</summary>
-    <p>{mechanism.description}</p>
+    <div class="details-body">
+      <ProseBlocks text={mechanism.description} />
+    </div>
   </details>
 </article>
 
@@ -91,10 +94,7 @@ const factor = getFactor(mechanism.factor)!;
     color: var(--coral-700);
     cursor: pointer;
   }
-  .details p {
-    font-size: 14px;
-    line-height: 1.6;
-    color: var(--ink-700);
-    margin: 12px 0 0;
+  .details-body {
+    margin-top: 12px;
   }
 </style>

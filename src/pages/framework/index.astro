@@ -96,7 +96,10 @@ const mechanismsBySupport = getMechanismsBySupport();
     <div class="wrap">
       <h2>{t.frameworkPage.evidenceHeading}</h2>
       <p class="section-lead">
-        {t.frameworkPage.evidenceLead(mechanismsBySupport.length)}
+        {t.frameworkPage.evidenceLead(
+          mechanismsBySupport.length,
+          mechanismsBySupport[mechanismsBySupport.length - 1].n_support,
+        )}
       </p>
       <div class="mechanism-grid" id="mechanism-grid">
         {mechanismsBySupport.map((mechanism, i) => (

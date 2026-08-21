@@ -320,12 +320,23 @@ evidence base" sections), `src/pages/framework/study/[id].astro` (title template
 "Findings" disclosure summary renamed to "Full findings", the incomplete-record note), the
 `writing/[...slug].astro` title template, and two research venue strings
 (`src/content/research/2025-amplifying-effect-explainability-groups.md`,
-`2026-llm-esc-cardiovascular-risk.md`). **Deliberately not applied** to
-`src/data/aidm-framework.json` (factor/mechanism/study text, e.g. `factor.definition`, still
-has em dashes) — that file is a Notion export, and per the note in `src/lib/aidm.ts`, individual
-records shouldn't be hand-edited; it gets re-synced wholesale. If Regina wants the evidence
-base itself dash-free, that has to happen at the Notion source and be re-exported, not patched
-here.
+`2026-llm-esc-cardiovascular-risk.md`).
+
+**Extended to the evidence base itself, at render time not in the source file (2026-08-20).**
+`src/data/aidm-framework.json` is still never hand-edited (it's a Notion export, re-synced
+wholesale, still full of em dashes in the raw JSON) — but `src/lib/aidm.ts` now exports
+`stripEmDash()`, applied wherever the evidence base's own editorial/paraphrased text is
+rendered: `formatProse()` (used by `ProseBlocks.astro` for `research_questions`,
+`design_notes`, `summary_of_findings`, and now also `mechanism.description`, see below),
+`factor.definition` and `factor.factor`/`mechanism.claim` headings (`FactorModal.astro`,
+`MechanismCard.astro`), and `study.ai_accuracy_details` (`FrameworkFigure.astro`'s AI-performance
+details popover). This survives re-syncs automatically, unlike hand-patching the JSON would.
+**Deliberately still untouched**: anything that's a verbatim quotation and must not be
+altered, specifically `study.study`/`venue` (a paper's own published title, wired through
+`formatQuotes()`/`AuthorQuotes.astro` for `authors_framing`, which is a direct quote of the
+paper's own words with a source citation like "(abstract)"). Two of the 56 study titles
+(`s-reicherts-2025`, `s-2026`) and three studies' `authors_framing` excerpts still carry em
+dashes on their pages for exactly this reason, and that's correct, not a miss.
 
 **Mono eyebrows are gone from the entire site, including `Eyebrow.astro` itself (removed
 outright at some point after 2026-08-12 — not dated precisely, caught during the 2026-08-19
@@ -591,6 +602,32 @@ further down for what actually changed and when.)
   All factor modals (`FactorModal.astro`, one per factor — 10 as of 2026-08-19, see Data model
   above) render at the bottom of the page and are opened/closed by a small vanilla-JS block
   (see below).
+
+**Mechanism card "Details" now formats `mechanism.description`, not just dumps it
+(2026-08-20).** Previously `MechanismCard.astro` rendered `mechanism.description` as one raw
+`<p>`, so a description with several supporting-example paragraphs (blank-line-separated in
+Notion) and `→`-prefixed bullet lines collapsed into a single run-on paragraph with literal
+arrow characters visible (HTML collapses `\n`). It now goes through `<ProseBlocks
+text={mechanism.description} />`, the same component study pages already use for
+`research_questions`/`design_notes`/`summary_of_findings`. This required extending
+`formatProse()` in `src/lib/aidm.ts`: the old version decided list-vs-paragraph once for the
+*whole* field (a global "is most of this text list-marker lines" ratio), which missed the
+common mechanism-description shape of one intro paragraph plus a single trailing `→` example
+(the ratio never got high enough to trigger). It's now a two-pass per-paragraph-block
+classifier: each blank-line-separated block is classified on its own (list / intro+list /
+plain text), then consecutive single-marker blocks (the "RQ1 \n\n RQ2 \n\n RQ3" study-page
+pattern) are merged into one shared list, and a lone `→` line is always promoted to a
+one-item list even with no siblings (an arrow is a pure "this is a discrete point" signal;
+`RQ:`/`H1:` markers are not, so a lone `RQ: ...` with nothing else stays a plain paragraph,
+not a redundant one-item list). Verified against all 256 rendered evidence-base text fields
+(mechanism descriptions, factor definitions, and every study's research_questions/
+design_notes/summary_of_findings/ai_accuracy_details) before shipping: 0 leftover literal `→`
+characters (was 4 mechanisms under the old algorithm), and the ~30 fields whose block
+structure changed were all reviewed by hand and are strictly better groupings than before
+(mainly: OLD sometimes folded a non-question closing sentence into an RQ list as a phantom
+extra item; NEW correctly splits it into its own paragraph). `.prose-list` in
+`ProseBlocks.astro` gained a plain bullet dot (`::before`, `var(--text-faint)`) since
+arrow-derived items no longer carry any visual list marker once the arrow is stripped.
 - `src/pages/framework/study/[id].astro` — one real static page per study (56 pages as of
   2026-08-19, `getStaticPaths` off `src/lib/aidm.ts`'s `studies` array — re-run the node
   one-liner under Data model above if this count is suspected stale). Header with read/own-work/

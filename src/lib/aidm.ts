@@ -219,43 +219,114 @@ export function parseManipulatedFactors(entries: string[]): ManipulatedFactorEnt
   });
 }
 
-// Free text out of Notion (research_questions, design_notes, summary_of_findings) is
-// unstructured prose, written a study at a time with no enforced convention — but in
-// practice it's consistently blank-line-separated blocks, and research_questions in
-// particular is often a run of one-per-item lines (RQ1:, H1:, etc.) — sometimes each on
-// its own blank-line-separated block (RQ1 \n\n RQ2 \n\n RQ3), sometimes packed into one
-// block separated only by single newlines (Experiment 1: \n H1: ... \n H2: ...). Rather
-// than hand-formatting ~150 text blocks across 56 studies, decide once per field: if
-// nearly every line in the whole text looks like an item, the whole thing is one list
-// (with an optional leading intro line kept as its own paragraph); otherwise each
-// blank-line block is its own paragraph. See ProseBlocks.astro for the render side.
+// Site style avoids em dashes (see CLAUDE.md's "No em dashes" rule) but the Notion
+// export still has them throughout its free-text fields. Rather than hand-editing the
+// JSON, which gets replaced wholesale on every re-sync (see the file header above),
+// dashes are stripped at render time here. This is a mechanical comma substitution, not
+// editorial judgement, so it won't always land on the punctuation a human editor would
+// pick — but it's consistently readable for the aside/connector usage this text uses an
+// em dash for, and it survives re-syncs without anyone remembering to redo it. Only
+// applied to Regina's own paraphrased/coded text (description, definition,
+// research_questions, design_notes, summary_of_findings, ai_accuracy_details) — never to
+// a paper's own title/venue (quoted verbatim, must not be altered) or authors_framing
+// (a direct quotation of the paper's own words, see formatQuotes below).
+export function stripEmDash(text: string): string {
+  return text.replace(/\s*—\s*/g, ', ').replace(/,\s*,/g, ',').replace(/ {2,}/g, ' ').trim();
+}
+
+// Free text out of Notion (research_questions, design_notes, summary_of_findings,
+// mechanism.description) is unstructured prose, written a study/mechanism at a time
+// with no enforced convention — but in practice it's consistently blank-line-separated
+// blocks, and some fields are runs of one-per-item lines (RQ1:, H1:, → for a supporting
+// example, etc.) — sometimes each on its own blank-line-separated block (RQ1 \n\n RQ2
+// \n\n RQ3), sometimes packed into one block separated only by single newlines
+// (Experiment 1: \n H1: ... \n H2: ...). Rather than hand-formatting ~150+ text blocks,
+// classify each blank-line block on its own: a block that's almost entirely marker
+// lines becomes a list (with a leading non-marker line kept as its own intro
+// paragraph); everything else is a paragraph. A block that's a single marker line by
+// itself (no siblings) is provisionally neither: consecutive single-marker blocks are
+// then merged into one shared list (the common "RQ1 \n\n RQ2 \n\n RQ3" pattern), while a
+// truly isolated one stays a plain paragraph — except a lone arrow, which always means
+// "this is a discrete point" even with nothing beside it (a mechanism's description is
+// often just an intro paragraph plus one supporting example). See ProseBlocks.astro for
+// the render side.
 export interface ProseBlock {
   type: 'p' | 'ul';
   text?: string;
   items?: string[];
 }
 
-const LIST_MARKER = /^(RQ\s*\d*[:.]?|H\d+[:.]|\d+[.):]|[-•])\s+/i;
+const LIST_MARKER = /^(RQ\s*\d*[:.]?|H\d+[:.]|\d+[.):]|[-•]|→)\s+/i;
+const ARROW_PREFIX = /^→\s*/;
+
+// Arrow bullets are a pure "this is a point" signal with no informational content of
+// their own, so the arrow is dropped from the rendered item (the <ul> supplies a bullet
+// instead, see .prose-list in ProseBlocks.astro). RQ:/H1:/numbered markers stay on the
+// item text, since the label itself is informative (which hypothesis this is).
+function cleanListItem(line: string): string {
+  return stripEmDash(line.replace(ARROW_PREFIX, '').trim());
+}
+
+type RawBlock =
+  | { kind: 'list'; items: string[] }
+  | { kind: 'introList'; intro: string; items: string[] }
+  | { kind: 'soloMarker'; item: string; isArrow: boolean }
+  | { kind: 'text'; text: string };
+
+function classifyBlock(blockText: string): RawBlock {
+  const lines = blockText.split('\n').map((l) => l.trim()).filter(Boolean);
+  const listLines = lines.filter((l) => LIST_MARKER.test(l));
+
+  if (lines.length >= 2 && listLines.length >= 2 && listLines.length >= lines.length - 1) {
+    if (LIST_MARKER.test(lines[0])) {
+      return { kind: 'list', items: lines.map(cleanListItem) };
+    }
+    return { kind: 'introList', intro: stripEmDash(lines[0]), items: lines.slice(1).map(cleanListItem) };
+  }
+  if (lines.length === 1 && LIST_MARKER.test(lines[0])) {
+    return { kind: 'soloMarker', item: cleanListItem(lines[0]), isArrow: ARROW_PREFIX.test(lines[0]) };
+  }
+  return { kind: 'text', text: stripEmDash(lines.join(' ')) };
+}
 
 export function formatProse(text: string): ProseBlock[] {
-  const paragraphs = text.split(/\n\s*\n/).map((b) => b.trim()).filter(Boolean);
-  const allLines = paragraphs.flatMap((p) => p.split('\n').map((l) => l.trim()).filter(Boolean));
-  const listLines = allLines.filter((l) => LIST_MARKER.test(l));
+  const raw = text.split(/\n\s*\n/).map((b) => b.trim()).filter(Boolean).map(classifyBlock);
 
-  if (allLines.length >= 2 && listLines.length >= 2 && listLines.length >= allLines.length - 1) {
-    if (LIST_MARKER.test(allLines[0])) {
-      return [{ type: 'ul', items: allLines }];
+  const out: ProseBlock[] = [];
+  let pendingSolo: { item: string; isArrow: boolean }[] = [];
+
+  const appendList = (items: string[]) => {
+    const prev = out[out.length - 1];
+    if (prev?.type === 'ul') prev.items!.push(...items);
+    else out.push({ type: 'ul', items: [...items] });
+  };
+  const appendParagraph = (t: string) => out.push({ type: 'p', text: t });
+  const flushSolo = () => {
+    if (pendingSolo.length === 0) return;
+    if (pendingSolo.length >= 2 || pendingSolo[0].isArrow) {
+      appendList(pendingSolo.map((s) => s.item));
+    } else {
+      appendParagraph(pendingSolo[0].item);
     }
-    return [
-      { type: 'p', text: allLines[0] },
-      { type: 'ul', items: allLines.slice(1) },
-    ];
-  }
+    pendingSolo = [];
+  };
 
-  return paragraphs.map((block) => ({
-    type: 'p',
-    text: block.split('\n').map((l) => l.trim()).filter(Boolean).join(' '),
-  }));
+  for (const block of raw) {
+    if (block.kind === 'soloMarker') {
+      pendingSolo.push({ item: block.item, isArrow: block.isArrow });
+      continue;
+    }
+    flushSolo();
+    if (block.kind === 'list') appendList(block.items);
+    else if (block.kind === 'introList') {
+      appendParagraph(block.intro);
+      appendList(block.items);
+    } else {
+      appendParagraph(block.text);
+    }
+  }
+  flushSolo();
+  return out;
 }
 
 // authors_framing is consistently written as one quoted excerpt per blank-line block,

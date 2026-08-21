@@ -101,8 +101,8 @@ const en = {
     simplificationNote:
       "Every framework is a simplification, and this one is no exception. The factors shown here are deliberately coarse; individual studies contain distinctions, conditions and caveats that no diagram can hold. Where a study is richer than its position in the framework suggests, that detail sits on the study's own page.",
     evidenceHeading: 'Where the evidence stands',
-    evidenceLead: (count: number) =>
-      `${count} mechanisms, ordered by how many studies support each, from the most-replicated finding down to one still resting on a single study.`,
+    evidenceLead: (count: number, minSupport: number) =>
+      `${count} mechanisms, ordered by how many studies support each, from the mechanism with the highest number of supporting studies down to the one resting on the fewest, currently ${minSupport} ${minSupport === 1 ? 'study' : 'studies'}.`,
     showAllMechanisms: (count: number) => `Show all ${count} mechanisms →`,
     aboutEvidenceHeading: 'About the evidence base',
     aboutEvidenceText: [
@@ -239,8 +239,8 @@ const pt: typeof en = {
     simplificationNote:
       'Toda a framework é uma simplificação, e esta não é exceção. Os fatores aqui apresentados são deliberadamente amplos; estudos individuais contêm distinções, condições e ressalvas que nenhum diagrama consegue detalhar ao promenor. Quando um estudo é mais rico do que a sua posição na framework sugere, esse detalhe está disponível na página do próprio estudo.',
     evidenceHeading: 'Onde está a evidência',
-    evidenceLead: (count: number) =>
-      `${count} mecanismos, ordenados pelo número de estudos que apoiam cada um, desde a conclusão mais replicada até um que ainda assenta num único estudo.`,
+    evidenceLead: (count: number, minSupport: number) =>
+      `${count} mecanismos, ordenados pelo número de estudos que apoiam cada um, desde o mecanismo com o maior número de estudos de apoio até ao que assenta em menos, atualmente ${minSupport} estudo${minSupport === 1 ? '' : 's'}.`,
     showAllMechanisms: (count: number) => `Ver todos os ${count} mecanismos →`,
     aboutEvidenceHeading: 'Sobre a base de evidência',
     aboutEvidenceText: [

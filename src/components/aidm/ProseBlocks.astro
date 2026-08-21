@@ -37,4 +37,14 @@ const blocks = formatProse(text);
     flex-direction: column;
     gap: 10px;
   }
+  .prose-list li {
+    position: relative;
+    padding-left: 18px;
+  }
+  .prose-list li::before {
+    content: '•';
+    position: absolute;
+    left: 2px;
+    color: var(--text-faint);
+  }
 </style>

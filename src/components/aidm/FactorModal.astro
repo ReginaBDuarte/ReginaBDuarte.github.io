@@ -1,6 +1,6 @@
 ---
 import type { Factor } from '../../lib/aidm';
-import { splitSubFactors, getMechanismsForFactor, studiesForMechanism } from '../../lib/aidm';
+import { splitSubFactors, getMechanismsForFactor, studiesForMechanism, stripEmDash } from '../../lib/aidm';
 
 interface Props {
   factor: Factor;
@@ -18,14 +18,14 @@ const factorMechanisms = getMechanismsForFactor(factor);
           <span class="dot">·</span>
           <span class="type">{factor.type}</span>
         </span>
-        <h2 id={`modal-${factor.id}-title`}>{factor.factor}</h2>
+        <h2 id={`modal-${factor.id}-title`}>{stripEmDash(factor.factor)}</h2>
       </div>
       <div class="head-right">
         <button type="button" class="close-btn" data-modal-close aria-label="Close">✕</button>
       </div>
     </header>
 
-    <p class="definition">{factor.definition}</p>
+    <p class="definition">{stripEmDash(factor.definition)}</p>
 
     {subFactors.length > 0 && (
       <div class="sub-factors">
@@ -44,7 +44,7 @@ const factorMechanisms = getMechanismsForFactor(factor);
               <li class="mechanism">
                 <div class="mechanism-head">
                   <span class="mechanism-number">{i + 1}</span>
-                  <p class="claim">{mechanism.claim}</p>
+                  <p class="claim">{stripEmDash(mechanism.claim)}</p>
                 </div>
                 <div class="mechanism-badges">
                   <span class="support-count">
